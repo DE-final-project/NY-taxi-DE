@@ -109,6 +109,21 @@ services:
       retries: 10
     networks:
      - de-final-project-net
+
+  # One-shot: creates the Bronze bucket once MinIO is healthy, then exits.
+  minio-init:
+    image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
+    container_name: de-final-project-minio-init
+    restart: "no"
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      sh -c "mc alias set local http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}
+      && mc mb --ignore-existing local/${MINIO_BUCKET}"
+    networks:
+      - de-final-project-net
+
   ingest-image:
     build: ./ingest-image
     image: de-final-project-ingest-image
