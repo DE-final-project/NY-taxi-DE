@@ -161,6 +161,21 @@ services:
     networks:
       - de-final-project-net
 
+  # One-shot: incrementally copies new Bronze Parquet files from MinIO into SQL Server raw tables.
+  loader:
+    build: ./loader-image
+    image: de-final-project-loader-image
+    container_name: de-final-project-loader
+    restart: "no"
+    env_file: .env
+    depends_on:
+      minio-init:
+        condition: service_completed_successfully
+      sqlserver-init:
+        condition: service_completed_successfully
+    networks:
+      - de-final-project-net
+
   ingest-image:
     build: ./ingest-image
     image: de-final-project-ingest-image
