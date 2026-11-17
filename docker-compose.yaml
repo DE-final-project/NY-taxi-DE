@@ -176,6 +176,22 @@ services:
     networks:
       - de-final-project-net
 
+  # One-shot: dbt transformations raw -> silver -> gold inside SQL Server.
+  # Usage: docker compose run --rm dbt dbt build
+  dbt:
+    build: ./dbt-image
+    image: de-final-project-dbt-image
+    container_name: de-final-project-dbt
+    restart: "no"
+    env_file: .env
+    volumes:
+      - ./dbt-image/ny_taxi:/usr/app
+    depends_on:
+      sqlserver-init:
+        condition: service_completed_successfully
+    networks:
+      - de-final-project-net
+
   ingest-image:
     build: ./ingest-image
     image: de-final-project-ingest-image
