@@ -54,6 +54,7 @@ def _get_frame(month: str) -> pd.DataFrame:
         raise HTTPException(status_code=404, detail=f"Unknown month '{month}'")
     with _lock:
         if month not in _frames:
+            _frames.clear()  # Bounded cache: keep only one month per worker to avoid OOM.
             path = _download(month)
             logger.info("Reading %s into memory", path)
             _frames[month] = pd.read_parquet(path)
