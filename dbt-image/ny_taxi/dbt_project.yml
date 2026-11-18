@@ -14,3 +14,8 @@ models:
       +schema: silver
     gold:
       +schema: gold
+
+
+seeds:
+  ny_taxi:
+    +schema: gold

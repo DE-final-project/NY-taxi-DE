@@ -1,0 +1,12 @@
+version: 2
+
+seeds:
+  - name: dim_vendor
+    columns:
+      - name: vendor_id
+        data_tests: [unique, not_null]
+
+  - name: dim_payment_type
+    columns:
+      - name: payment_type_id
+        data_tests: [unique, not_null]
