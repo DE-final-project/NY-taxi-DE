@@ -1,3 +1,5 @@
+name: ny-taxi-de-main
+
 services:
   postgres:
     image: postgres:16
@@ -100,6 +102,23 @@ services:
         condition: service_healthy
     networks:
       - de-final-project-net
+
+  dbt:
+    build: ./dbt-image
+    image: de-final-project-dbt
+    container_name: ny-taxi-dbt
+    working_dir: /usr/app
+    volumes:
+      - ./dbt-project/ny_taxi_silver:/usr/app
+    env_file:
+      - .env
+    environment:
+      DBT_PROFILES_DIR: /usr/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - de-final-project-net    
 
 networks:
   de-final-project-net:

@@ -1,0 +1,174 @@
+version: 2
+
+models:
+  - name: stg_taxi_batch
+    description: >
+      Staging model for batch taxi trip records from the Bronze layer.
+      Standardizes column names and data types while preserving
+      the original source records without applying business-level
+      cleaning or validation.
+
+    columns:
+      - name: vendor_id
+        description: Identifier of the taxi technology provider.
+        tests:
+          - not_null
+
+      - name: pickup_datetime
+        description: Date and time when the taxi trip started.
+        tests:
+          - not_null
+
+      - name: dropoff_datetime
+        description: Date and time when the taxi trip ended.
+        tests:
+          - not_null
+
+      - name: passenger_count
+        description: Number of passengers recorded for the trip.
+
+      - name: trip_distance
+        description: Total recorded trip distance in miles.
+        tests:
+          - not_null
+
+      - name: ratecode_id
+        description: Rate code identifier associated with the trip.
+
+      - name: store_and_fwd_flag
+        description: Indicates whether the trip record was stored before being forwarded.
+
+      - name: pu_location_id
+        description: TLC Taxi Zone identifier for the pickup location.
+
+      - name: do_location_id
+        description: TLC Taxi Zone identifier for the dropoff location.
+
+      - name: payment_type
+        description: Identifier representing the payment method.
+
+      - name: fare_amount
+        description: Base fare amount calculated for the trip.
+
+      - name: extra
+        description: Additional charges applied to the trip.
+
+      - name: mta_tax
+        description: MTA tax amount associated with the trip.
+
+      - name: tip_amount
+        description: Tip amount recorded for the trip.
+
+      - name: tolls_amount
+        description: Total toll charges associated with the trip.
+
+      - name: improvement_surcharge
+        description: Improvement surcharge amount.
+
+      - name: total_amount
+        description: Total trip amount including applicable charges.
+        tests:
+          - not_null
+
+      - name: congestion_surcharge
+        description: Congestion surcharge amount.
+
+      - name: airport_fee
+        description: Airport fee associated with the trip.
+
+      - name: cbd_congestion_fee
+        description: Central Business District congestion fee.
+
+      - name: source_month
+        description: Month associated with the source data.
+
+      - name: source_type
+        description: Identifies the ingestion source of the trip record.
+
+  - name: stg_taxi_stream
+    description: >
+      Staging model for streaming taxi trip records from the Bronze layer.
+      Standardizes column names and data types while preserving
+      the original source records without applying business-level
+      cleaning or validation.
+
+    columns:
+      - name: vendor_id
+        description: Identifier of the taxi technology provider.
+        tests:
+          - not_null
+
+      - name: pickup_datetime
+        description: Date and time when the taxi trip started.
+        tests:
+          - not_null
+
+      - name: dropoff_datetime
+        description: Date and time when the taxi trip ended.
+        tests:
+          - not_null
+
+      - name: passenger_count
+        description: Number of passengers recorded for the trip.
+
+      - name: trip_distance
+        description: Total recorded trip distance in miles.
+        tests:
+          - not_null
+
+      - name: ratecode_id
+        description: Rate code identifier associated with the trip.
+
+      - name: store_and_fwd_flag
+        description: Indicates whether the trip record was stored before being forwarded.
+
+      - name: pu_location_id
+        description: TLC Taxi Zone identifier for the pickup location.
+
+      - name: do_location_id
+        description: TLC Taxi Zone identifier for the dropoff location.
+
+      - name: payment_type
+        description: Identifier representing the payment method.
+
+      - name: fare_amount
+        description: Base fare amount calculated for the trip.
+
+      - name: extra
+        description: Additional charges applied to the trip.
+
+      - name: mta_tax
+        description: MTA tax amount associated with the trip.
+
+      - name: tip_amount
+        description: Tip amount recorded for the trip.
+
+      - name: tolls_amount
+        description: Total toll charges associated with the trip.
+
+      - name: improvement_surcharge
+        description: Improvement surcharge amount.
+
+      - name: total_amount
+        description: Total trip amount including applicable charges.
+        tests:
+          - not_null
+
+      - name: congestion_surcharge
+        description: Congestion surcharge amount.
+
+      - name: airport_fee
+        description: Airport fee associated with the trip.
+
+      - name: cbd_congestion_fee
+        description: Central Business District congestion fee.
+
+      - name: source_month
+        description: Source month assigned to the streaming records.
+        tests:
+          - not_null
+
+      - name: source_type
+        description: Identifies the ingestion source of the trip record.
+        tests:
+          - not_null
