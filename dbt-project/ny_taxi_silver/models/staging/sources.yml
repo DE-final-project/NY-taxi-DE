@@ -3,11 +3,21 @@ version: 2
 sources:
   - name: bronze
     schema: bronze
-    description: Raw data ingested into the Bronze layer.
+    description: >
+      Bronze layer containing raw NYC Yellow Taxi trip data.
+      Data is ingested from two sources: batch ingestion
+      through the NYC Taxi API and streaming ingestion (.Parquet files)
+      through Kafka.
 
     tables:
       - name: batch_trips
-        description: Raw NYC Yellow Taxi batch trip records.
+        description: >
+          Raw NYC Yellow Taxi trip records ingested through
+          the batch API process. Records are stored before
+          dbt transformations are applied.
 
       - name: stream_data
-        description: Raw NYC Yellow Taxi streaming trip records from February 2025.
+        description: >
+          Raw NYC Yellow Taxi trip records received through
+          the Kafka streaming pipeline. Contains streaming
+          records from February 2025.

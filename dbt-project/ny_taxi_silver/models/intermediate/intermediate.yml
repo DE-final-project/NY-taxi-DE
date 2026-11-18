@@ -1,15 +1,18 @@
 version: 2
 
 models:
-
   - name: int_taxi_trips_quality_validation
     description: >
-      Combines batch and streaming records,
-      applies validation rules, and identifies
-      rejected records with rejection reasons.
+      Combines standardized batch and streaming taxi trip records
+      into a unified dataset. Applies data quality validation rules
+      and identifies accepted and rejected records with their
+      corresponding rejection reasons.
 
     columns:
       - name: record_status
+        description: >
+          Indicates whether a trip record passed or failed
+          the data quality validation rules.
         data_tests:
           - not_null
           - accepted_values:
@@ -17,18 +20,24 @@ models:
                 values: ['accepted', 'rejected']
 
   - name: int_taxi_trips_accepted
-    description: Accepted and validated taxi trips.
+    description: >
+      Contains taxi trip records that successfully passed
+      the data quality validation process. These records
+      are used as input for downstream analytical models.
 
     columns:
       - name: pickup_datetime
+        description: Pickup timestamp of the validated trip.
         data_tests:
           - not_null
 
       - name: dropoff_datetime
+        description: Dropoff timestamp of the validated trip.
         data_tests:
           - not_null
 
       - name: record_status
+        description: Validation status of the trip record.
         data_tests:
           - accepted_values:
               arguments:
@@ -36,15 +45,18 @@ models:
 
   - name: int_taxi_trips_rejected
     description: >
-      Rejected taxi records with explanations
-      for why each record failed validation.
+      Contains taxi trip records that failed data quality validation.
+      Retains rejection information to support data quality monitoring
+      and investigation of invalid records.
 
     columns:
       - name: rejection_reason
+        description: Explanation of why the trip record was rejected.
         data_tests:
           - not_null
-      
+
       - name: record_status
+        description: Validation status of the trip record.
         data_tests:
           - accepted_values:
               arguments:
