@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: bronze
+    schema: bronze
+    description: Raw data ingested into the Bronze layer.
+
+    tables:
+      - name: batch_trips
+        description: Raw NYC Yellow Taxi batch trip records.
+
+      - name: stream_data
+        description: Raw NYC Yellow Taxi streaming trip records from February 2025.

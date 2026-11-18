@@ -1,0 +1,173 @@
+version: 2
+
+
+models:
+  - name: stg_taxi_batch
+    description: >
+      Standardized batch taxi trips from the Bronze layer.
+      Column names and data types are normalized without
+      removing or cleaning source records.
+
+    columns:
+      - name: vendor_id
+        description: Taxi technology provider identifier.
+        tests:
+          - not_null
+
+      - name: pickup_datetime
+        description: Trip pickup timestamp.
+        tests:
+          - not_null
+
+      - name: dropoff_datetime
+        description: Trip dropoff timestamp.
+        tests:
+          - not_null
+
+      - name: passenger_count
+        description: Number of passengers.
+
+      - name: trip_distance
+        description: Trip distance in miles.
+        tests:
+          - not_null
+
+      - name: ratecode_id
+        description: Rate code identifier.
+
+      - name: store_and_fwd_flag
+        description: Store and forward flag.
+
+      - name: pu_location_id
+        description: Pickup location identifier.
+
+      - name: do_location_id
+        description: Dropoff location identifier.
+
+      - name: payment_type
+        description: Payment method identifier.
+
+      - name: fare_amount
+        description: Base trip fare.
+
+      - name: extra
+        description: Extra charges.
+
+      - name: mta_tax
+        description: MTA tax.
+
+      - name: tip_amount
+        description: Tip amount.
+
+      - name: tolls_amount
+        description: Total toll charges.
+
+      - name: improvement_surcharge
+        description: Improvement surcharge.
+
+      - name: total_amount
+        description: Total trip amount.
+        tests:
+          - not_null
+
+      - name: congestion_surcharge
+        description: Congestion surcharge.
+
+      - name: airport_fee
+        description: Airport fee.
+
+      - name: cbd_congestion_fee
+        description: CBD congestion fee.
+
+      - name: source_month
+        description: Source data month.
+
+      - name: source_type
+        description: Indicates the ingestion source.
+
+  - name: stg_taxi_stream
+    description: >
+      Standardized streaming taxi trips from the Bronze layer.
+      Column names and data types are normalized without
+      removing or cleaning source records.
+
+    columns:
+      - name: vendor_id
+        description: Taxi technology provider identifier.
+        tests:
+          - not_null
+
+      - name: pickup_datetime
+        description: Trip pickup timestamp.
+        tests:
+          - not_null
+
+      - name: dropoff_datetime
+        description: Trip dropoff timestamp.
+        tests:
+          - not_null
+
+      - name: passenger_count
+        description: Number of passengers.
+
+      - name: trip_distance
+        description: Trip distance in miles.
+        tests:
+          - not_null
+
+      - name: ratecode_id
+        description: Rate code identifier.
+
+      - name: store_and_fwd_flag
+        description: Store and forward flag.
+
+      - name: pu_location_id
+        description: Pickup location identifier.
+
+      - name: do_location_id
+        description: Dropoff location identifier.
+
+      - name: payment_type
+        description: Payment method identifier.
+
+      - name: fare_amount
+        description: Base trip fare.
+
+      - name: extra
+        description: Extra charges.
+
+      - name: mta_tax
+        description: MTA tax.
+
+      - name: tip_amount
+        description: Tip amount.
+
+      - name: tolls_amount
+        description: Total toll charges.
+
+      - name: improvement_surcharge
+        description: Improvement surcharge.
+
+      - name: total_amount
+        description: Total trip amount.
+        tests:
+          - not_null
+
+      - name: congestion_surcharge
+        description: Congestion surcharge.
+
+      - name: airport_fee
+        description: Airport fee.
+
+      - name: cbd_congestion_fee
+        description: CBD congestion fee.
+
+      - name: source_month
+        description: Source month, set to feb for streaming records.
+        tests:
+          - not_null
+
+      - name: source_type
+        description: Indicates the ingestion source.
+        tests:
+          - not_null

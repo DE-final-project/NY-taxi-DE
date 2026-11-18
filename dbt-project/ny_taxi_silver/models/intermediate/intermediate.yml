@@ -1,0 +1,51 @@
+version: 2
+
+models:
+
+  - name: int_taxi_trips_quality_validation
+    description: >
+      Combines batch and streaming records,
+      applies validation rules, and identifies
+      rejected records with rejection reasons.
+
+    columns:
+      - name: record_status
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['accepted', 'rejected']
+
+  - name: int_taxi_trips_accepted
+    description: Accepted and validated taxi trips.
+
+    columns:
+      - name: pickup_datetime
+        data_tests:
+          - not_null
+
+      - name: dropoff_datetime
+        data_tests:
+          - not_null
+
+      - name: record_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['accepted']
+
+  - name: int_taxi_trips_rejected
+    description: >
+      Rejected taxi records with explanations
+      for why each record failed validation.
+
+    columns:
+      - name: rejection_reason
+        data_tests:
+          - not_null
+      
+      - name: record_status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['rejected']

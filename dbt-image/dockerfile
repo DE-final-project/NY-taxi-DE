@@ -11,3 +11,6 @@ RUN pip install --no-cache-dir dbt-core dbt-postgres
 ENTRYPOINT ["dbt"]
 
 CMD ["--help"]
+
+#dbt debug
+# docker compose run --rm dbt debug

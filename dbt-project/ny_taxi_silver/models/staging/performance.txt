@@ -1,0 +1,21 @@
+ ✔ Container de-final-project-postgres Running                                                                                                                                                                                        0.0s
+Container de-final-project-postgres Waiting 
+Container de-final-project-postgres Healthy 
+Container ny-taxi-de-main-dbt-run-dcafd913355c Creating 
+Container ny-taxi-de-main-dbt-run-dcafd913355c Created 
+09:15:58  Running with dbt=1.12.7
+09:15:58  Registered adapter: postgres=1.11.0
+09:15:59  Found 5 models, 16 data tests, 2 sources, 477 macros
+09:15:59  
+09:15:59  Concurrency: 4 threads (target='dev')
+09:15:59  
+09:15:59  1 of 2 START sql view model silver.stg_taxi_batch .............................. [RUN]
+09:15:59  2 of 2 START sql view model silver.stg_taxi_stream ............................. [RUN]
+09:15:59  1 of 2 OK created sql view model silver.stg_taxi_batch ......................... [CREATE VIEW in 0.12s]
+09:15:59  2 of 2 OK created sql view model silver.stg_taxi_stream ........................ [CREATE VIEW in 0.13s]
+09:15:59  
+09:15:59  Finished running 2 view models in 0 hours 0 minutes and 0.27 seconds (0.27s).
+09:15:59  
+09:15:59  Completed successfully
+09:15:59  
+09:15:59  Done. PASS=2 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=2
