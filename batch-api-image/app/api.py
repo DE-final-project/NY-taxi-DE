@@ -8,11 +8,26 @@ import pandas as pd
 import requests
 from fastapi import FastAPI, HTTPException
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-)
+
+class JsonFormatter(logging.Formatter):
+    """One JSON object per log line -> easy to filter and aggregate (stage, level, rows, seconds...)."""
+
+    def format(self, record: logging.LogRecord) -> str:
+        entry = {
+            "ts": self.formatTime(record, "%Y-%m-%dT%H:%M:%S"),
+            "level": record.levelname,
+            "stage": record.name,   # the logger name: loader / ingest / batch-api ...
+            "msg": record.getMessage(),
+        }
+        entry.update(getattr(record, "fields", {}))   # numbers passed with extra={"fields": {...}}
+        return json.dumps(entry)
+
+
+handler = logging.StreamHandler()
+handler.setFormatter(JsonFormatter())
+logging.basicConfig(level=logging.INFO, handlers=[handler])
 logger = logging.getLogger("batch-api")
+
 
 BASE_URL = os.environ.get("BATCH_SOURCE_BASE_URL", "https://d37ci6vzurychx.cloudfront.net/trip-data")
 MONTHS = [m.strip() for m in os.environ.get(

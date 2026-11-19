@@ -1,4 +1,5 @@
 """Paginates the batch API for each available month and writes each page as a Parquet file into the MinIO Bronze bucket."""
+import json
 import logging
 import os
 import time
@@ -8,11 +9,26 @@ import pandas as pd
 import requests
 import s3fs
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-)
+
+class JsonFormatter(logging.Formatter):
+    """One JSON object per log line -> easy to filter and aggregate (stage, level, rows, seconds...)."""
+
+    def format(self, record: logging.LogRecord) -> str:
+        entry = {
+            "ts": self.formatTime(record, "%Y-%m-%dT%H:%M:%S"),
+            "level": record.levelname,
+            "stage": record.name,   # the logger name: loader / ingest / batch-api ...
+            "msg": record.getMessage(),
+        }
+        entry.update(getattr(record, "fields", {}))   # numbers passed with extra={"fields": {...}}
+        return json.dumps(entry)
+
+
+handler = logging.StreamHandler()
+handler.setFormatter(JsonFormatter())
+logging.basicConfig(level=logging.INFO, handlers=[handler])
 logger = logging.getLogger("ingest")
+
 
 BATCH_API_URL = os.environ.get("BATCH_API_URL", "http://batch-api:8000")
 TABLE_NAME = os.environ.get("BATCH_TABLE_NAME", "batch_trips")

@@ -9,11 +9,26 @@ from datetime import datetime, timezone
 import pandas as pd
 from confluent_kafka import Consumer
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-)
+
+class JsonFormatter(logging.Formatter):
+    """One JSON object per log line -> easy to filter and aggregate (stage, level, rows, seconds...)."""
+
+    def format(self, record: logging.LogRecord) -> str:
+        entry = {
+            "ts": self.formatTime(record, "%Y-%m-%dT%H:%M:%S"),
+            "level": record.levelname,
+            "stage": record.name,   # the logger name: loader / ingest / batch-api ...
+            "msg": record.getMessage(),
+        }
+        entry.update(getattr(record, "fields", {}))   # numbers passed with extra={"fields": {...}}
+        return json.dumps(entry)
+
+
+handler = logging.StreamHandler()
+handler.setFormatter(JsonFormatter())
+logging.basicConfig(level=logging.INFO, handlers=[handler])
 logger = logging.getLogger("stream-consumer")
+
 
 KAFKA_BOOTSTRAP_SERVERS = os.environ["KAFKA_BOOTSTRAP_SERVERS"]
 KAFKA_TOPIC = os.environ["KAFKA_TOPIC"]

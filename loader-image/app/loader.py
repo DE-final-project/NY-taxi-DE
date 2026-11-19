@@ -2,16 +2,31 @@
 import logging
 import os
 import time
+import json
 
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pymssql
 import s3fs
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-)
+class JsonFormatter(logging.Formatter):
+    """One JSON object per log line -> easy to filter and aggregate (stage, level, rows, seconds...)."""
+
+    def format(self, record: logging.LogRecord) -> str:
+        entry = {
+            "ts": self.formatTime(record, "%Y-%m-%dT%H:%M:%S"),
+            "level": record.levelname,
+            "stage": record.name,   # the logger name: loader / ingest / batch-api ...
+            "msg": record.getMessage(),
+        }
+        entry.update(getattr(record, "fields", {}))   # numbers passed with extra={"fields": {...}}
+        return json.dumps(entry)
+
+
+handler = logging.StreamHandler()
+handler.setFormatter(JsonFormatter())
+logging.basicConfig(level=logging.INFO, handlers=[handler])
+
 logger = logging.getLogger("loader")
 
 MINIO_BUCKET = os.environ["MINIO_BUCKET"]
@@ -159,18 +174,21 @@ def main() -> None:
                          or partition_key == "ingest_date"]
         done = _loaded_files(conn, table)
         new_files = [f for f in all_files if f.endswith(".parquet") and f not in done]
-        logger.info("%s: %d file(s) in lake, %d already loaded, %d new", table, len(all_files), len(done), len(new_files))
+        logger.info("files discovered", extra={"fields": {
+            "table": table, "in_lake": len(all_files), "already_loaded": len(done), "new": len(new_files)}})
 
         for i, path in enumerate(new_files, 1):
             rows = _load_file(conn, fs, table, partition_key, path)
             total_files += 1
             total_rows += rows
-            logger.info("[%s %d/%d] loaded %d rows from %s", table, i, len(new_files), rows, path)
+            logger.info("file loaded", extra={"fields": {
+                "table": table, "file": path, "rows": rows, "n": i, "of": len(new_files)}})
 
     conn.close()
     elapsed = time.monotonic() - run_start
-    logger.info("Finished: %d file(s), %d rows in %.1fs (%.0f rows/s)",
-                total_files, total_rows, elapsed, total_rows / elapsed if elapsed else 0)
+    logger.info("load finished", extra={"fields": {
+        "files": total_files, "rows": total_rows, "seconds": round(elapsed, 1),
+        "rows_per_second": round(total_rows / elapsed) if elapsed else 0}})
 
 
 if __name__ == "__main__":
