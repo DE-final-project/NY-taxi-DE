@@ -14,5 +14,7 @@ RUN pip install --no-cache-dir --default-timeout=120 --retries 10 -r /tmp/requir
 
 WORKDIR /usr/app
 ENV DBT_PROFILES_DIR=/usr/app
+# Bake the dbt project into the image so Airflow's DockerOperator can run it without a volume.
+COPY ny_taxi .
 
 CMD ["dbt", "debug"]

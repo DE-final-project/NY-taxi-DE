@@ -221,7 +221,35 @@ services:
         condition: service_healthy
     networks:
       - de-final-project-net
-
+  # Orchestrator: runs the pipeline (ingest -> load -> dbt) as Docker containers via the DAG in airflow/dags.
+  # Dev only: `standalone` runs api-server + scheduler + dag-processor in one container, UI without login.
+  airflow:
+    image: apache/airflow:3.3.2-python3.12
+    container_name: de-final-project-airflow
+    restart: unless-stopped
+    command: standalone
+    env_file: .env
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_ALL_ADMINS: "true"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/api/v2/monitor/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+    networks:
+      - de-final-project-net
 networks:
   de-final-project-net:
     name: de-final-project-net
