@@ -13,4 +13,4 @@ ny_taxi:
       password: "{{ env_var('MSSQL_SA_PASSWORD') }}"
       encrypt: true
       trust_cert: true
-      threads: 4
+      threads: 1
