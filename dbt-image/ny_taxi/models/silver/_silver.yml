@@ -27,3 +27,20 @@ models:
                   - distance_too_long
                   - negative_amount
                   - trip_over_24h
+
+  - name: quarantine_trips
+    description: Rows rejected by the silver cleaning rules (first rule broken) or extra duplicate copies.
+    columns:
+      - name: reject_reason
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - dropoff_before_pickup
+                  - outside_2025
+                  - zero_distance
+                  - distance_too_long
+                  - negative_amount
+                  - trip_over_24h
+                  - duplicate

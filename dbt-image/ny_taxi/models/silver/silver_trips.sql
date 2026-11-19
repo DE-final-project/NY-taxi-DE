@@ -23,14 +23,7 @@ with_load_time as (
 cleaned as (
     select
         *,
-        convert(char(64), hashbytes('SHA2_256', concat_ws('|',
-            vendor_id,
-            convert(varchar(23), pickup_at, 121),
-            convert(varchar(23), dropoff_at, 121),
-            pickup_location_id,
-            dropoff_location_id,
-            cast(total_amount as decimal(10, 2))
-        )), 2) as trip_id,
+        {{ trip_id() }} as trip_id,
         datediff(minute, pickup_at, dropoff_at) as trip_duration_min,
         case payment_type_id
             when 1 then 'Credit card'

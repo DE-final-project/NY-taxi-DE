@@ -2,6 +2,7 @@
 
 Each task runs one of the project's images as a one-shot container on the compose network.
 """
+import requests
 import os
 from datetime import datetime, timedelta
 
@@ -20,9 +21,33 @@ SECRET_KEYS = ["MINIO_ROOT_USER", "MINIO_ROOT_PASSWORD", "MSSQL_SA_PASSWORD"]
 PUBLIC_ENV = {k: os.environ[k] for k in PUBLIC_KEYS if k in os.environ}
 SECRET_ENV = {k: os.environ[k] for k in SECRET_KEYS if k in os.environ}
 
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
+
+
+def notify_failure(context):
+    """Send a Telegram alert when a task fails for good (after all retries)."""
+    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
+        return  # alerts not configured -> never break the pipeline because of them
+    ti = context["ti"]  # the task instance that failed
+    text = (
+        "🔴 NY Taxi pipeline failed\n"
+        f"DAG: {ti.dag_id}\n"
+        f"Task: {ti.task_id}\n"
+        f"Run: {context['run_id']}\n"
+        f"Try: {ti.try_number}\n"
+        f"Error: {context.get('exception')}"
+    )
+    requests.post(
+        f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
+        json={"chat_id": TELEGRAM_CHAT_ID, "text": text},
+        timeout=10,
+    )
+
 default_args = {
     "retries": 2,
     "retry_delay": timedelta(minutes=2),
+        "on_failure_callback": notify_failure,
 }
 
 
