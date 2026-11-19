@@ -19,6 +19,22 @@ services:
     networks:
       - de-final-project-net
 
+  # One-shot: creates the Airflow metadata database in Postgres if it does not exist yet.
+  postgres-init:
+    image: postgres:16
+    container_name: de-final-project-postgres-init
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    entrypoint: >
+      sh -c "psql -h postgres -U ${POSTGRES_USER} -d ${POSTGRES_DB} -tc \"SELECT 1 FROM pg_database WHERE datname = 'airflow'\" | grep -q 1
+      || psql -h postgres -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c 'CREATE DATABASE airflow'"
+    networks:
+      - de-final-project-net
+
   # Single-node KRaft broker (combined broker+controller roles), no Zookeeper needed.
   kafka:
     image: apache/kafka:3.7.0
@@ -208,6 +224,7 @@ services:
 
 networks:
   de-final-project-net:
+    name: de-final-project-net
     driver: bridge
 
 volumes:
