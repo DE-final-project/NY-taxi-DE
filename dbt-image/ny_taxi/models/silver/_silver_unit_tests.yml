@@ -1,0 +1,31 @@
+version: 2
+
+unit_tests:
+  - name: silver_trips_cleans_and_dedups
+    description: >
+      Bad rows are dropped, and a trip that arrives from BOTH batch and stream
+      is kept once, from batch.
+    model: silver_trips
+    overrides:
+      macros:
+        is_incremental: false   # test the full-build logic, not the "only new files" filter
+    given:
+      - input: ref('stg_batch_trips')
+        rows:
+          # A: valid trip -> kept
+          - {vendor_id: 1, pickup_at: "2025-03-01 10:00:00", dropoff_at: "2025-03-01 10:20:00", trip_distance: 3.5, pickup_location_id: 100, dropoff_location_id: 200, fare_amount: 15.0, total_amount: 20.0, trip_source: batch, _source_file: f_batch}
+          # B: dropoff before pickup -> dropped
+          - {vendor_id: 1, pickup_at: "2025-03-01 11:00:00", dropoff_at: "2025-03-01 10:50:00", trip_distance: 2.0, pickup_location_id: 100, dropoff_location_id: 200, fare_amount: 10.0, total_amount: 12.0, trip_source: batch, _source_file: f_batch}
+          # C: zero distance -> dropped
+          - {vendor_id: 2, pickup_at: "2025-03-01 12:00:00", dropoff_at: "2025-03-01 12:10:00", trip_distance: 0, pickup_location_id: 100, dropoff_location_id: 200, fare_amount: 8.0, total_amount: 9.0, trip_source: batch, _source_file: f_batch}
+      - input: ref('stg_stream_trips')
+        rows:
+          # A': the SAME trip as A, from the stream -> duplicate, batch wins
+          - {vendor_id: 1, pickup_at: "2025-03-01 10:00:00", dropoff_at: "2025-03-01 10:20:00", trip_distance: 3.5, pickup_location_id: 100, dropoff_location_id: 200, fare_amount: 15.0, total_amount: 20.0, trip_source: stream, _source_file: f_stream}
+      - input: source('raw', 'load_log')
+        rows:
+          - {file_path: f_batch,  loaded_at: "2025-03-02 00:00:00"}
+          - {file_path: f_stream, loaded_at: "2025-03-02 00:00:00"}
+    expect:
+      rows:
+        - {vendor_id: 1, trip_distance: 3.5, trip_source: batch, trip_duration_min: 20}
