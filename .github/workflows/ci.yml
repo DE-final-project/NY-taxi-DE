@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "omar/**"]
+  pull_request:            # also run on every PR, before it can be merged
+    branches: [main]
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install loader dependencies
+        run: pip install -r loader-image/requirements.txt pytest
+      - name: Run unit tests
+        working-directory: loader-image
+        run: pytest -v
+
+  dbt-parse:
+    runs-on: ubuntu-latest
+    env:                  # dummy values: dbt parse reads the profile but never connects
+      MSSQL_DATABASE: ci
+      MSSQL_SA_PASSWORD: ci
+      DBT_PROFILES_DIR: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install ODBC runtime (pyodbc needs libodbc)
+        run: sudo apt-get update && sudo apt-get install -y unixodbc
+      - name: Install dbt
+        run: pip install -r dbt-image/requirements.txt
+      - name: Parse dbt project (refs, sources, YAML)
+        working-directory: dbt-image/ny_taxi
+        run: dbt parse
