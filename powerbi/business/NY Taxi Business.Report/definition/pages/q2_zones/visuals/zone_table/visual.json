@@ -1,0 +1,99 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "zone_table",
+  "position": {
+    "x": 800,
+    "y": 380,
+    "z": 2,
+    "height": 320,
+    "width": 460,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold fact_trips"
+                    }
+                  },
+                  "Property": "Trips"
+                }
+              },
+              "queryRef": "gold fact_trips.Trips",
+              "nativeQueryRef": "Trips",
+              "active": false
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold fact_trips"
+                    }
+                  },
+                  "Property": "Revenue per Trip"
+                }
+              },
+              "queryRef": "gold fact_trips.Revenue per Trip",
+              "nativeQueryRef": "Revenue per Trip",
+              "active": false
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold fact_trips"
+                    }
+                  },
+                  "Property": "Avg Distance (mi)"
+                }
+              },
+              "queryRef": "gold fact_trips.Avg Distance (mi)",
+              "nativeQueryRef": "Avg Distance (mi)",
+              "active": false
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dim_zone"
+                    }
+                  },
+                  "Property": "zone_name"
+                }
+              },
+              "queryRef": "gold dim_zone.zone_name",
+              "nativeQueryRef": "zone_name",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Zone detail'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

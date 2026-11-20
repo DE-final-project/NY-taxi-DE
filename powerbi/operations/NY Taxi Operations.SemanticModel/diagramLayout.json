@@ -1,0 +1,113 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 1186.3341190806409,
+            "y": 291.76899042206821
+          },
+          "nodeIndex": "gold dq_reject_summary",
+          "nodeLineageTag": "1f8b3f32-478c-43cd-bb6b-47da94bf6d0d",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 902.334119080641,
+            "y": 341.76899042206821
+          },
+          "nodeIndex": "gold dq_rules",
+          "nodeLineageTag": "c753ea1e-1212-4038-86b6-94ebb69e8fae",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1420.3341190806409,
+            "y": 341.76899042206821
+          },
+          "nodeIndex": "gold pipeline_metrics",
+          "nodeLineageTag": "336922b8-7367-40cb-a1ed-95ea66699a84",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 334.19574583757628,
+            "y": 283.33664784425827
+          },
+          "nodeIndex": "public dag_run",
+          "nodeLineageTag": "dd9c070c-b2a9-4c48-b5e0-7ac32e9dd9db",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": 204.01607653610768
+          },
+          "nodeIndex": "public task_instance",
+          "nodeLineageTag": "5bb7f07a-3b7d-4f2d-95e0-87750b1ea9db",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 618.334119080641,
+            "y": -50
+          },
+          "nodeIndex": "public task_instance_history",
+          "nodeLineageTag": "db1d1ea4-fead-4c20-9015-c6b12d7c361e",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 439.69571650466838,
+            "y": 633.53798084413643
+          },
+          "nodeIndex": "Task Attempts",
+          "nodeLineageTag": "0888d433-ddd6-427b-b931-02458a20dfa6",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

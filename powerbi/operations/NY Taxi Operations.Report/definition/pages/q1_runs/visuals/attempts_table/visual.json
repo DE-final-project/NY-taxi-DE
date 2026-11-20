@@ -1,0 +1,139 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "attempts_table",
+  "position": {
+    "x": 20,
+    "y": 470,
+    "z": 8,
+    "height": 230,
+    "width": 1240,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Task Attempts"
+                    }
+                  },
+                  "Property": "run_id"
+                }
+              },
+              "queryRef": "Task Attempts.run_id",
+              "nativeQueryRef": "run_id",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Task Attempts"
+                    }
+                  },
+                  "Property": "task_id"
+                }
+              },
+              "queryRef": "Task Attempts.task_id",
+              "nativeQueryRef": "task_id",
+              "active": true
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Task Attempts"
+                        }
+                      },
+                      "Property": "try_number"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Task Attempts.try_number)",
+              "nativeQueryRef": "Sum of try_number",
+              "active": false
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Task Attempts"
+                    }
+                  },
+                  "Property": "state"
+                }
+              },
+              "queryRef": "Task Attempts.state",
+              "nativeQueryRef": "state",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Task Attempts"
+                    }
+                  },
+                  "Property": "attempt_kind"
+                }
+              },
+              "queryRef": "Task Attempts.attempt_kind",
+              "nativeQueryRef": "attempt_kind",
+              "active": true
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Task Attempts"
+                        }
+                      },
+                      "Property": "duration_s"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Task Attempts.duration_s)",
+              "nativeQueryRef": "Sum of duration_s",
+              "active": false
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Every task attempt (failures and retries)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

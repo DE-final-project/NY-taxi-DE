@@ -1,0 +1,31 @@
+table 'gold dim_vendor'
+	lineageTag: 28cda65a-a36f-4102-b005-e5fb98961a98
+
+	column vendor_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 0e643aed-b57c-4725-b5b3-bfc71a3a5950
+		summarizeBy: none
+		sourceColumn: vendor_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column vendor_name
+		dataType: string
+		lineageTag: 413722cb-71da-4a0d-9bcc-03cdab4df88c
+		summarizeBy: none
+		sourceColumn: vendor_name
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'gold dim_vendor' = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("localhost,1436", "ny_taxi_dwh"),
+				    gold_dim_vendor = Source{[Schema="gold",Item="dim_vendor"]}[Data]
+				in
+				    gold_dim_vendor
+
+	annotation PBI_ResultType = Table
+

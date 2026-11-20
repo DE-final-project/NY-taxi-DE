@@ -1,0 +1,89 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "rows_by_day",
+  "position": {
+    "x": 20,
+    "y": 150,
+    "z": 6,
+    "height": 300,
+    "width": 600,
+    "tabOrder": 6
+  },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold pipeline_metrics"
+                    }
+                  },
+                  "Property": "load_date"
+                }
+              },
+              "queryRef": "gold pipeline_metrics.load_date",
+              "nativeQueryRef": "load_date",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold pipeline_metrics"
+                    }
+                  },
+                  "Property": "Rows Delivered"
+                }
+              },
+              "queryRef": "gold pipeline_metrics.Rows Delivered",
+              "nativeQueryRef": "Rows Delivered"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold pipeline_metrics"
+                    }
+                  },
+                  "Property": "Rows Rejected"
+                }
+              },
+              "queryRef": "gold pipeline_metrics.Rows Rejected",
+              "nativeQueryRef": "Rows Rejected"
+            }
+          ]
+        },
+        "Legend": {
+          "projections": []
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Q2: Rows delivered vs rejected per load day'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

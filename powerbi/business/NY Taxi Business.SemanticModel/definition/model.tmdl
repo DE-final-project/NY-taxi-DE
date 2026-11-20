@@ -1,0 +1,26 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["gold fact_trips","gold dim_date","gold dim_zone","gold dim_payment_type","gold dim_vendor"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table 'gold fact_trips'
+ref table DateTableTemplate_8948baac-727a-4a1e-aae6-90448cf6ca09
+ref table LocalDateTable_2afa2042-0a93-4ad1-bb4b-0c8ea9382992
+ref table 'gold dim_date'
+ref table LocalDateTable_3590bb7d-806e-4c0c-83e0-0d3e9b7fc77d
+ref table 'gold dim_zone'
+ref table 'gold dim_payment_type'
+ref table 'gold dim_vendor'
+
+ref cultureInfo en-US
+

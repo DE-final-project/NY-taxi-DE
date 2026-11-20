@@ -1,0 +1,8 @@
+reject_reason,rule,root_cause,action,status
+dropoff_before_pickup,dropoff_at must be after pickup_at,Meter clock error at the source (TLC),Quarantined - cannot infer the true times,Isolated
+outside_2025,pickup_at must be in 2025,Wrong device date at the source (TLC),Quarantined - out of the analysed period,Isolated
+zero_distance,trip_distance must be > 0,Cancelled trip or GPS failure at the source (TLC),Quarantined - kept for audit,Isolated
+distance_too_long,trip_distance must be < 200 miles,Odometer or GPS outlier at the source (TLC),Quarantined - kept for audit,Isolated
+negative_amount,fare_amount and total_amount must be >= 0,Refunds or corrections booked as negative rows (TLC),Quarantined - not revenue,Isolated
+trip_over_24h,trip must last <= 24 hours,Meter left running at the source (TLC),Quarantined - kept for audit,Isolated
+duplicate,one row per trip_id (batch copy wins),Stream replay or duplicate rows in the source,Removed from silver by dedup - extra copy quarantined,Resolved

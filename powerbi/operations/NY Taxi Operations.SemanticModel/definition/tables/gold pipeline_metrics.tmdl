@@ -1,0 +1,157 @@
+table 'gold pipeline_metrics'
+	lineageTag: 336922b8-7367-40cb-a1ed-95ea66699a84
+
+	/// Rows copied from the lake into SQL Server raw.
+	measure 'Rows Loaded' = SUM('gold pipeline_metrics'[rows_loaded])
+		formatString: #,##0
+		displayFolder: Q2 Data Movement
+		lineageTag: dd4bddd3-84b7-4c07-b3ec-80596fee8f77
+
+	/// Raw rows that went to quarantine instead of silver.
+	measure 'Rows Rejected' = SUM('gold pipeline_metrics'[rows_rejected])
+		formatString: #,##0
+		displayFolder: Q2 Data Movement
+		lineageTag: df15f318-da7f-4ad2-9092-5c27aabd1a66
+
+	/// Raw rows that reached silver/gold (loaded - rejected).
+	measure 'Rows Delivered' = [Rows Loaded] - [Rows Rejected]
+		formatString: #,##0
+		displayFolder: Q2 Data Movement
+		lineageTag: 4e49af24-81cf-4a41-90ab-61d80ec80cd1
+
+	/// Share of loaded rows that reached gold.
+	measure 'Delivery Rate' = DIVIDE([Rows Delivered], [Rows Loaded])
+		formatString: 0.0%
+		displayFolder: Q2 Data Movement
+		lineageTag: c1fd8fc9-87c6-485c-8adb-3dd5396c1565
+
+	/// Share of loaded rows rejected by data-quality rules.
+	measure 'Error Rate' = DIVIDE([Rows Rejected], [Rows Loaded])
+		formatString: 0.00%
+		displayFolder: Q2 Data Movement
+		lineageTag: 475afdbd-c161-4185-86b7-c790eb0fb3ef
+
+	/// Extra copies of a trip removed by the dedup.
+	measure 'Duplicates Removed' = SUM('gold pipeline_metrics'[rows_duplicate])
+		formatString: #,##0
+		displayFolder: Q2 Data Movement
+		lineageTag: 4a31422a-61f6-4321-a9ea-0f221a3d794b
+
+	/// Lake Parquet files loaded.
+	measure 'Files Loaded' = SUM('gold pipeline_metrics'[files_loaded])
+		formatString: #,##0
+		displayFolder: Q2 Data Movement
+		lineageTag: dfcbce32-e452-4507-b320-683ded1f873d
+
+	/// Seconds spent loading files into raw.
+	measure 'Load Time (s)' = SUM('gold pipeline_metrics'[load_seconds])
+		formatString: #,##0
+		displayFolder: Q2 Data Movement
+		lineageTag: a2bfc22d-be8a-46ac-9e61-0b575f7dc04f
+
+	/// Rows loaded per second.
+	measure 'Throughput (rows/s)' = DIVIDE([Rows Loaded], [Load Time (s)])
+		formatString: #,##0
+		displayFolder: Q2 Data Movement
+		lineageTag: 2b7f881d-0695-4667-bbed-cfcabc52a838
+
+	column load_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: bf1af0ce-4ed3-41aa-bdea-159ccc5e86b1
+		summarizeBy: none
+		sourceColumn: load_date
+
+		variation Variation
+			isDefault
+			relationship: f27ae5e0-610b-475b-8fa6-a9660296dc7f
+			defaultHierarchy: LocalDateTable_16ec29e9-b689-4fd1-8c98-36a9e66781fd.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column source_table
+		dataType: string
+		lineageTag: 3aa03147-4b8d-4cfe-825f-5732c1dcc99b
+		summarizeBy: none
+		sourceColumn: source_table
+
+		annotation SummarizationSetBy = Automatic
+
+	column files_loaded
+		dataType: int64
+		formatString: 0
+		lineageTag: e3e031c2-abff-41ca-a027-462496d98308
+		summarizeBy: sum
+		sourceColumn: files_loaded
+
+		annotation SummarizationSetBy = Automatic
+
+	column rows_loaded
+		dataType: int64
+		formatString: 0
+		lineageTag: ddbcc0db-cc33-420f-aee0-401c0b5d8eef
+		summarizeBy: sum
+		sourceColumn: rows_loaded
+
+		annotation SummarizationSetBy = Automatic
+
+	column load_seconds
+		dataType: double
+		lineageTag: 699e06fb-fa43-4056-b0a9-01d77e2cb2f6
+		summarizeBy: sum
+		sourceColumn: load_seconds
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column rows_per_second
+		dataType: int64
+		formatString: 0
+		lineageTag: e6316def-894e-4d7d-bee7-7fb710ee1bc9
+		summarizeBy: sum
+		sourceColumn: rows_per_second
+
+		annotation SummarizationSetBy = Automatic
+
+	column rows_rejected
+		dataType: int64
+		formatString: 0
+		lineageTag: 3207e1c8-0755-467c-8e98-b09f3c5ec9f4
+		summarizeBy: sum
+		sourceColumn: rows_rejected
+
+		annotation SummarizationSetBy = Automatic
+
+	column rows_duplicate
+		dataType: int64
+		formatString: 0
+		lineageTag: 4e8093ad-6bde-48b7-9437-cc356083620a
+		summarizeBy: sum
+		sourceColumn: rows_duplicate
+
+		annotation SummarizationSetBy = Automatic
+
+	column error_rate_pct
+		dataType: double
+		lineageTag: ee0a6a84-026c-45ad-92ed-c201848ce651
+		summarizeBy: sum
+		sourceColumn: error_rate_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'gold pipeline_metrics' = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("localhost,1436", "ny_taxi_dwh"),
+				    gold_pipeline_metrics = Source{[Schema="gold",Item="pipeline_metrics"]}[Data]
+				in
+				    gold_pipeline_metrics
+
+	annotation PBI_ResultType = Table
+

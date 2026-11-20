@@ -1,0 +1,72 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "rejected_by_reason",
+  "position": {
+    "x": 640,
+    "y": 150,
+    "z": 7,
+    "height": 300,
+    "width": 620,
+    "tabOrder": 7
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dq_reject_summary"
+                    }
+                  },
+                  "Property": "reject_reason"
+                }
+              },
+              "queryRef": "gold dq_reject_summary.reject_reason",
+              "nativeQueryRef": "reject_reason",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dq_reject_summary"
+                    }
+                  },
+                  "Property": "Quarantined Rows"
+                }
+              },
+              "queryRef": "gold dq_reject_summary.Quarantined Rows",
+              "nativeQueryRef": "Quarantined Rows"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Why rows were not delivered'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

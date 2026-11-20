@@ -1,0 +1,105 @@
+table 'gold dq_reject_summary'
+	lineageTag: 1f8b3f32-478c-43cd-bb6b-47da94bf6d0d
+
+	/// Quarantined rows (by reason, from dq_reject_summary).
+	measure 'Quarantined Rows' = SUM('gold dq_reject_summary'[rows_rejected])
+		formatString: #,##0
+		displayFolder: Q3 Data Quality
+		lineageTag: 3775370d-48cd-4744-8d20-3c0bb06ec0b0
+
+	/// Rows whose issue is fixed by the pipeline (duplicates removed).
+	measure 'Resolved Rows' = CALCULATE([Quarantined Rows], 'gold dq_rules'[status] = "Resolved")
+		formatString: #,##0
+		displayFolder: Q3 Data Quality
+		lineageTag: ba67e073-f722-49cc-b0ea-743de61dea4f
+
+	/// Rows with source-data errors that cannot be fixed - kept in quarantine for audit.
+	measure 'Isolated Rows' = CALCULATE([Quarantined Rows], 'gold dq_rules'[status] = "Isolated")
+		formatString: #,##0
+		displayFolder: Q3 Data Quality
+		lineageTag: 41b32bec-526b-4092-b73a-82f59f75dee9
+
+	column load_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 88c4c13d-c3de-4e7d-8ce7-455001ea097b
+		summarizeBy: none
+		sourceColumn: load_date
+
+		variation Variation
+			isDefault
+			relationship: 10cdacf8-49af-4672-943d-f615c0283432
+			defaultHierarchy: LocalDateTable_a66b9176-e57b-49cc-8ffb-1e5d4817b2e4.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column source_table
+		dataType: string
+		lineageTag: 9fe5aa89-0f92-4fe5-a09b-5f0d4fe2ea2f
+		summarizeBy: none
+		sourceColumn: source_table
+
+		annotation SummarizationSetBy = Automatic
+
+	column reject_reason
+		dataType: string
+		lineageTag: bec800b4-e36e-4739-aa61-e33653226956
+		summarizeBy: none
+		sourceColumn: reject_reason
+
+		annotation SummarizationSetBy = Automatic
+
+	column rows_rejected
+		dataType: int64
+		formatString: 0
+		lineageTag: fd476083-9f21-40fe-b123-b7b3dad4d0d1
+		summarizeBy: sum
+		sourceColumn: rows_rejected
+
+		annotation SummarizationSetBy = Automatic
+
+	column rule
+		dataType: string
+		lineageTag: abd55abe-9dea-4ee8-97b3-519d93e1e66e
+		summarizeBy: none
+		sourceColumn: rule
+
+		annotation SummarizationSetBy = Automatic
+
+	column root_cause
+		dataType: string
+		lineageTag: 373599f3-47ce-4593-a69f-9ff14888e7dd
+		summarizeBy: none
+		sourceColumn: root_cause
+
+		annotation SummarizationSetBy = Automatic
+
+	column action
+		dataType: string
+		lineageTag: 670d4736-115e-47a8-b223-4908b4d035eb
+		summarizeBy: none
+		sourceColumn: action
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		lineageTag: 1814fd54-da38-4ce9-bf69-ae7ad1cf924a
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'gold dq_reject_summary' = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("localhost,1436", "ny_taxi_dwh"),
+				    gold_dq_reject_summary = Source{[Schema="gold",Item="dq_reject_summary"]}[Data]
+				in
+				    gold_dq_reject_summary
+
+	annotation PBI_ResultType = Table
+

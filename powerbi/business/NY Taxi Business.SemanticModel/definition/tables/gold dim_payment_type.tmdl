@@ -1,0 +1,31 @@
+table 'gold dim_payment_type'
+	lineageTag: 26b0efb6-f73b-4411-974a-edbfb630e506
+
+	column payment_type_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 65c978fb-2ff6-42c9-b651-c8385cef6131
+		summarizeBy: none
+		sourceColumn: payment_type_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_type
+		dataType: string
+		lineageTag: 1f902745-5180-47a6-a31b-26ed680dc7b3
+		summarizeBy: none
+		sourceColumn: payment_type
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'gold dim_payment_type' = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("localhost,1436", "ny_taxi_dwh"),
+				    gold_dim_payment_type = Source{[Schema="gold",Item="dim_payment_type"]}[Data]
+				in
+				    gold_dim_payment_type
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "kpi_3",
+  "position": {
+    "x": 644,
+    "y": 20,
+    "z": 3,
+    "height": 110,
+    "width": 196,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold fact_trips"
+                    }
+                  },
+                  "Property": "Avg Distance (mi)"
+                }
+              },
+              "queryRef": "gold fact_trips.Avg Distance (mi)",
+              "nativeQueryRef": "Avg Distance (mi)"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

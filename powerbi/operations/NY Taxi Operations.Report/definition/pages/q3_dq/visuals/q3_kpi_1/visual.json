@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "q3_kpi_1",
+  "position": {
+    "x": 340,
+    "y": 20,
+    "z": 1,
+    "height": 110,
+    "width": 300,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dq_reject_summary"
+                    }
+                  },
+                  "Property": "Resolved Rows"
+                }
+              },
+              "queryRef": "gold dq_reject_summary.Resolved Rows",
+              "nativeQueryRef": "Resolved Rows"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

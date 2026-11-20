@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "q1_runs_kpi_1",
+  "position": {
+    "x": 228,
+    "y": 20,
+    "z": 1,
+    "height": 110,
+    "width": 196,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public dag_run"
+                    }
+                  },
+                  "Property": "Successful Runs"
+                }
+              },
+              "queryRef": "public dag_run.Successful Runs",
+              "nativeQueryRef": "Successful Runs"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

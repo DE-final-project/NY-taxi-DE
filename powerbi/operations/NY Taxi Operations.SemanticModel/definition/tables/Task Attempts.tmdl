@@ -1,0 +1,85 @@
+/// Every task attempt: final attempts (task_instance) + earlier retried attempts (task_instance_history).
+table 'Task Attempts'
+	lineageTag: 0888d433-ddd6-427b-b931-02458a20dfa6
+
+	/// All task attempts, including retries.
+	measure 'Task Attempts' = COUNTROWS('Task Attempts')
+		formatString: #,##0
+		displayFolder: Q1 Runs
+		lineageTag: b7e42751-d0ae-46c6-9441-8e313f30203c
+
+	/// Task attempts that failed (each one triggers a retry or fails the run).
+	measure 'Failed Attempts' = CALCULATE([Task Attempts], 'Task Attempts'[state] = "failed")
+		formatString: #,##0
+		displayFolder: Q1 Runs
+		lineageTag: 8302ec12-6c2a-42b3-9de2-984fa1c625c0
+
+	/// Attempts that were a retry (try_number > 1).
+	measure Retries = CALCULATE([Task Attempts], 'Task Attempts'[try_number] > 1)
+		formatString: #,##0
+		displayFolder: Q1 Runs
+		lineageTag: fa5e0615-bac0-452c-84f7-dd3c52cb6cba
+
+	/// Failed attempts / all attempts.
+	measure 'Attempt Failure Rate' = DIVIDE([Failed Attempts], [Task Attempts])
+		formatString: 0.0%
+		displayFolder: Q1 Runs
+		lineageTag: 3ddc1b7a-70d6-4ce3-916d-93e0c3921c63
+
+	/// Average task attempt duration in seconds.
+	measure 'Avg Attempt Duration (s)' = AVERAGE('Task Attempts'[duration_s])
+		formatString: #,##0
+		displayFolder: Q1 Runs
+		lineageTag: bb4d5b7e-39f7-4395-9142-7ef842aa072f
+
+	column run_id
+		lineageTag: 1865691c-1c0a-4f5e-baab-13ecb8cad332
+		isNameInferred
+		sourceColumn: [run_id]
+
+	column task_id
+		lineageTag: bf585552-e06c-4396-83f5-7729ea54c6e4
+		isNameInferred
+		sourceColumn: [task_id]
+
+	column try_number
+		lineageTag: aa2e703a-bff9-426d-8ccb-d80cd7a85e95
+		isNameInferred
+		sourceColumn: [try_number]
+
+	column state
+		lineageTag: 70f0db15-ba46-479e-b4c2-a8d51a3c1e61
+		isNameInferred
+		sourceColumn: [state]
+
+	column start_date
+		lineageTag: 226a8e45-b251-44ac-840a-b15f8878c116
+		isNameInferred
+		sourceColumn: [start_date]
+
+	column duration_s
+		lineageTag: ab9ae611-ddc3-4890-9a32-ad46ae11d8a4
+		isNameInferred
+		sourceColumn: [duration_s]
+
+	column attempt_kind
+		lineageTag: ac3e78e4-f2b5-4c6d-bedb-d840576f8e73
+		isNameInferred
+		sourceColumn: [attempt_kind]
+
+	partition 'Task Attempts' = calculated
+		mode: import
+		source =
+				UNION(
+				    SELECTCOLUMNS('public task_instance',
+				        "run_id", 'public task_instance'[run_id], "task_id", 'public task_instance'[task_id],
+				        "try_number", 'public task_instance'[try_number], "state", 'public task_instance'[state],
+				        "start_date", 'public task_instance'[start_date], "duration_s", 'public task_instance'[duration],
+				        "attempt_kind", "final attempt"),
+				    SELECTCOLUMNS('public task_instance_history',
+				        "run_id", 'public task_instance_history'[run_id], "task_id", 'public task_instance_history'[task_id],
+				        "try_number", 'public task_instance_history'[try_number], "state", 'public task_instance_history'[state],
+				        "start_date", 'public task_instance_history'[start_date], "duration_s", 'public task_instance_history'[duration],
+				        "attempt_kind", "retried attempt")
+				)
+

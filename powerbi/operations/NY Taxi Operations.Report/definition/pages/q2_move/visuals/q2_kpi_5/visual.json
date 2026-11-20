@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "q2_kpi_5",
+  "position": {
+    "x": 1060,
+    "y": 20,
+    "z": 5,
+    "height": 110,
+    "width": 196,
+    "tabOrder": 5
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold pipeline_metrics"
+                    }
+                  },
+                  "Property": "Throughput (rows/s)"
+                }
+              },
+              "queryRef": "gold pipeline_metrics.Throughput (rows/s)",
+              "nativeQueryRef": "Throughput (rows/s)"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

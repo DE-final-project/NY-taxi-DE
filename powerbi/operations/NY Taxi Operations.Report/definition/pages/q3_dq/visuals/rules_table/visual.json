@@ -1,0 +1,129 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "rules_table",
+  "position": {
+    "x": 20,
+    "y": 470,
+    "z": 6,
+    "height": 230,
+    "width": 1240,
+    "tabOrder": 6
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dq_reject_summary"
+                    }
+                  },
+                  "Property": "Quarantined Rows"
+                }
+              },
+              "queryRef": "gold dq_reject_summary.Quarantined Rows",
+              "nativeQueryRef": "Quarantined Rows",
+              "active": false
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dq_rules"
+                    }
+                  },
+                  "Property": "reject_reason"
+                }
+              },
+              "queryRef": "gold dq_rules.reject_reason",
+              "nativeQueryRef": "reject_reason",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dq_rules"
+                    }
+                  },
+                  "Property": "rule"
+                }
+              },
+              "queryRef": "gold dq_rules.rule",
+              "nativeQueryRef": "rule",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dq_rules"
+                    }
+                  },
+                  "Property": "root_cause"
+                }
+              },
+              "queryRef": "gold dq_rules.root_cause",
+              "nativeQueryRef": "root_cause",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dq_rules"
+                    }
+                  },
+                  "Property": "action"
+                }
+              },
+              "queryRef": "gold dq_rules.action",
+              "nativeQueryRef": "action",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dq_rules"
+                    }
+                  },
+                  "Property": "status"
+                }
+              },
+              "queryRef": "gold dq_rules.status",
+              "nativeQueryRef": "status",
+              "active": true
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Data-quality rules: why each issue happens and whether it is resolved'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

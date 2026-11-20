@@ -1,0 +1,72 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "status_share",
+  "position": {
+    "x": 20,
+    "y": 150,
+    "z": 4,
+    "height": 300,
+    "width": 420,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "donutChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dq_rules"
+                    }
+                  },
+                  "Property": "status"
+                }
+              },
+              "queryRef": "gold dq_rules.status",
+              "nativeQueryRef": "status",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dq_reject_summary"
+                    }
+                  },
+                  "Property": "Quarantined Rows"
+                }
+              },
+              "queryRef": "gold dq_reject_summary.Quarantined Rows",
+              "nativeQueryRef": "Quarantined Rows"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Q3: Resolved vs isolated rows'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
