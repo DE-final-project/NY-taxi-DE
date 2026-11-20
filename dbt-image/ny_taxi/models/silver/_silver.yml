@@ -1,6 +1,12 @@
 version: 2
 
 models:
+  - name: stg_batch_trips
+    description: Staging table for batch trip data
+
+  - name: stg_stream_trips
+    description: Staging table for stream trip data
+
   - name: silver_trips
     description: One clean, de-duplicated row per trip from batch + stream.
     columns:

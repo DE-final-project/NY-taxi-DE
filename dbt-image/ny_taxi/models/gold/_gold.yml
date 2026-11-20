@@ -43,11 +43,19 @@ models:
                 field: location_id
 
   - name: dim_date
+    description: Dimensional table for dates
     columns:
       - name: date_key
         data_tests: [unique, not_null]
 
   - name: dim_zone
+    description: Dimensional table for taxi zones
     columns:
       - name: location_id
         data_tests: [unique, not_null]
+  
+  - name: pipeline_metrics
+    description: Fact table for pipeline metrics   # one row per ____ × ____ ; files, rows, seconds, rows/s, rejects, error rate
+
+  - name: dq_reject_summary
+    description: Summary of data quality rejects   # rejected rows grouped by ____, ____, ____ ; joined to seed ____ for root cause + status
