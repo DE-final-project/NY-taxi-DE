@@ -3,9 +3,9 @@
   "name": "revenue_by_borough",
   "position": {
     "x": 650,
-    "y": 150,
+    "y": 195,
     "z": 7,
-    "height": 300,
+    "height": 505,
     "width": 610,
     "tabOrder": 7
   },
@@ -27,8 +27,7 @@
                 }
               },
               "queryRef": "gold dim_zone.borough",
-              "nativeQueryRef": "borough",
-              "active": true
+              "nativeQueryRef": "borough"
             }
           ]
         },

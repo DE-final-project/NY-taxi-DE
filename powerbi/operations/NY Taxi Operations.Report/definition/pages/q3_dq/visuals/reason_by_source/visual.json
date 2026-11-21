@@ -3,14 +3,14 @@
   "name": "reason_by_source",
   "position": {
     "x": 460,
-    "y": 150,
+    "y": 195,
     "z": 5,
-    "height": 300,
+    "height": 270,
     "width": 800,
     "tabOrder": 5
   },
   "visual": {
-    "visualType": "stackedBarChart",
+    "visualType": "barChart",
     "query": {
       "queryState": {
         "Category": {
@@ -27,8 +27,7 @@
                 }
               },
               "queryRef": "gold dq_reject_summary.reject_reason",
-              "nativeQueryRef": "reject_reason",
-              "active": true
+              "nativeQueryRef": "reject_reason"
             }
           ]
         },
@@ -50,7 +49,7 @@
             }
           ]
         },
-        "Legend": {
+        "Series": {
           "projections": [
             {
               "field": {
@@ -64,8 +63,7 @@
                 }
               },
               "queryRef": "gold dq_reject_summary.source_table",
-              "nativeQueryRef": "source_table",
-              "active": true
+              "nativeQueryRef": "source_table"
             }
           ]
         }

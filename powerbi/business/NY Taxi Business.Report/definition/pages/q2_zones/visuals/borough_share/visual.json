@@ -3,9 +3,9 @@
   "name": "borough_share",
   "position": {
     "x": 800,
-    "y": 20,
+    "y": 75,
     "z": 1,
-    "height": 340,
+    "height": 300,
     "width": 460,
     "tabOrder": 1
   },
@@ -27,8 +27,7 @@
                 }
               },
               "queryRef": "gold dim_zone.borough",
-              "nativeQueryRef": "borough",
-              "active": true
+              "nativeQueryRef": "borough"
             }
           ]
         },

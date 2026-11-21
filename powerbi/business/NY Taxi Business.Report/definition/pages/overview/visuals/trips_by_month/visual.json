@@ -3,9 +3,9 @@
   "name": "trips_by_month",
   "position": {
     "x": 20,
-    "y": 150,
+    "y": 195,
     "z": 8,
-    "height": 300,
+    "height": 505,
     "width": 610,
     "tabOrder": 8
   },
@@ -27,8 +27,7 @@
                 }
               },
               "queryRef": "gold dim_date.Month Label",
-              "nativeQueryRef": "Month Label",
-              "active": true
+              "nativeQueryRef": "Month Label"
             }
           ]
         },

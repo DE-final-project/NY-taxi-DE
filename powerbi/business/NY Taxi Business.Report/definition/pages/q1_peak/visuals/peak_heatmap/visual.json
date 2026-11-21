@@ -3,9 +3,9 @@
   "name": "peak_heatmap",
   "position": {
     "x": 20,
-    "y": 20,
+    "y": 75,
     "z": 0,
-    "height": 420,
+    "height": 190,
     "width": 1240,
     "tabOrder": 0
   },
@@ -27,8 +27,7 @@
                 }
               },
               "queryRef": "gold dim_date.Weekday",
-              "nativeQueryRef": "Weekday",
-              "active": true
+              "nativeQueryRef": "Weekday"
             }
           ]
         },
@@ -64,8 +63,7 @@
                 }
               },
               "queryRef": "gold fact_trips.pickup_hour",
-              "nativeQueryRef": "pickup_hour",
-              "active": true
+              "nativeQueryRef": "pickup_hour"
             }
           ]
         }
@@ -80,6 +78,106 @@
               "expr": {
                 "Literal": {
                   "Value": "'Q1: When is demand highest? Trips by weekday x pickup hour'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "objects": {
+      "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "7D"
+                }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "FillRule": {
+                      "Input": {
+                        "Measure": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "gold fact_trips"
+                            }
+                          },
+                          "Property": "Trips"
+                        }
+                      },
+                      "FillRule": {
+                        "linearGradient2": {
+                          "min": {
+                            "color": {
+                              "Literal": {
+                                "Value": "'#FFFFFF'"
+                              }
+                            },
+                            "nullColoringStrategy": {
+                              "strategy": {
+                                "Literal": {
+                                  "Value": "'asZero'"
+                                }
+                              }
+                            }
+                          },
+                          "max": {
+                            "color": {
+                              "Literal": {
+                                "Value": "'#5DADE2'"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "dataViewWildcard": {
+                  "matchingOption": 1
+                }
+              }
+            ],
+            "metadata": "gold fact_trips.Trips"
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "7D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "rowHeaders": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "7D"
                 }
               }
             }

@@ -3,9 +3,9 @@
   "name": "loads_table",
   "position": {
     "x": 20,
-    "y": 470,
+    "y": 480,
     "z": 8,
-    "height": 230,
+    "height": 220,
     "width": 1240,
     "tabOrder": 8
   },
@@ -28,7 +28,7 @@
               },
               "queryRef": "gold pipeline_metrics.load_date",
               "nativeQueryRef": "load_date",
-              "active": true
+              "displayName": "Load date"
             },
             {
               "field": {
@@ -43,7 +43,7 @@
               },
               "queryRef": "gold pipeline_metrics.source_table",
               "nativeQueryRef": "source_table",
-              "active": true
+              "displayName": "Source"
             },
             {
               "field": {
@@ -63,7 +63,7 @@
               },
               "queryRef": "Sum(gold pipeline_metrics.files_loaded)",
               "nativeQueryRef": "Sum of files_loaded",
-              "active": false
+              "displayName": "Files"
             },
             {
               "field": {
@@ -83,7 +83,7 @@
               },
               "queryRef": "Sum(gold pipeline_metrics.rows_loaded)",
               "nativeQueryRef": "Sum of rows_loaded",
-              "active": false
+              "displayName": "Rows loaded"
             },
             {
               "field": {
@@ -103,7 +103,7 @@
               },
               "queryRef": "Sum(gold pipeline_metrics.rows_rejected)",
               "nativeQueryRef": "Sum of rows_rejected",
-              "active": false
+              "displayName": "Rows rejected"
             },
             {
               "field": {
@@ -118,12 +118,12 @@
                       "Property": "error_rate_pct"
                     }
                   },
-                  "Function": 0
+                  "Function": 1
                 }
               },
-              "queryRef": "Sum(gold pipeline_metrics.error_rate_pct)",
+              "queryRef": "Avg(gold pipeline_metrics.error_rate_pct)",
               "nativeQueryRef": "Sum of error_rate_pct",
-              "active": false
+              "displayName": "Error rate % (avg)"
             },
             {
               "field": {
@@ -143,7 +143,7 @@
               },
               "queryRef": "Sum(gold pipeline_metrics.load_seconds)",
               "nativeQueryRef": "Sum of load_seconds",
-              "active": false
+              "displayName": "Load seconds"
             },
             {
               "field": {
@@ -158,12 +158,12 @@
                       "Property": "rows_per_second"
                     }
                   },
-                  "Function": 0
+                  "Function": 1
                 }
               },
-              "queryRef": "Sum(gold pipeline_metrics.rows_per_second)",
+              "queryRef": "Avg(gold pipeline_metrics.rows_per_second)",
               "nativeQueryRef": "Sum of rows_per_second",
-              "active": false
+              "displayName": "Rows/s (avg)"
             }
           ]
         }

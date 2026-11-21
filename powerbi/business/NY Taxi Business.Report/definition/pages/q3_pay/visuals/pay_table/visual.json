@@ -3,9 +3,9 @@
   "name": "pay_table",
   "position": {
     "x": 20,
-    "y": 380,
+    "y": 390,
     "z": 4,
-    "height": 320,
+    "height": 310,
     "width": 600,
     "tabOrder": 4
   },
@@ -15,6 +15,20 @@
       "queryState": {
         "Values": {
           "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dim_payment_type"
+                    }
+                  },
+                  "Property": "payment_type"
+                }
+              },
+              "queryRef": "gold dim_payment_type.payment_type",
+              "nativeQueryRef": "payment_type"
+            },
             {
               "field": {
                 "Measure": {
@@ -27,8 +41,7 @@
                 }
               },
               "queryRef": "gold fact_trips.Trips",
-              "nativeQueryRef": "Trips",
-              "active": false
+              "nativeQueryRef": "Trips"
             },
             {
               "field": {
@@ -42,8 +55,7 @@
                 }
               },
               "queryRef": "gold fact_trips.Trips Share",
-              "nativeQueryRef": "Trips Share",
-              "active": false
+              "nativeQueryRef": "Trips Share"
             },
             {
               "field": {
@@ -57,8 +69,7 @@
                 }
               },
               "queryRef": "gold fact_trips.Revenue per Trip",
-              "nativeQueryRef": "Revenue per Trip",
-              "active": false
+              "nativeQueryRef": "Revenue per Trip"
             },
             {
               "field": {
@@ -72,23 +83,7 @@
                 }
               },
               "queryRef": "gold fact_trips.Tip %",
-              "nativeQueryRef": "Tip %",
-              "active": false
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "gold dim_payment_type"
-                    }
-                  },
-                  "Property": "payment_type"
-                }
-              },
-              "queryRef": "gold dim_payment_type.payment_type",
-              "nativeQueryRef": "payment_type",
-              "active": true
+              "nativeQueryRef": "Tip %"
             }
           ]
         }

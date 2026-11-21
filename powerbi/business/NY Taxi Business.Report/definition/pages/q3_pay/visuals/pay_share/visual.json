@@ -3,9 +3,9 @@
   "name": "pay_share",
   "position": {
     "x": 20,
-    "y": 20,
+    "y": 75,
     "z": 0,
-    "height": 340,
+    "height": 300,
     "width": 600,
     "tabOrder": 0
   },
@@ -27,8 +27,7 @@
                 }
               },
               "queryRef": "gold dim_payment_type.payment_type",
-              "nativeQueryRef": "payment_type",
-              "active": true
+              "nativeQueryRef": "payment_type"
             }
           ]
         },

@@ -3,9 +3,9 @@
   "name": "rejected_by_reason",
   "position": {
     "x": 640,
-    "y": 150,
+    "y": 195,
     "z": 7,
-    "height": 300,
+    "height": 270,
     "width": 620,
     "tabOrder": 7
   },
@@ -27,8 +27,7 @@
                 }
               },
               "queryRef": "gold dq_reject_summary.reject_reason",
-              "nativeQueryRef": "reject_reason",
-              "active": true
+              "nativeQueryRef": "reject_reason"
             }
           ]
         },
@@ -50,6 +49,24 @@
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "gold dq_reject_summary"
+                  }
+                },
+                "Property": "Quarantined Rows"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
       }
     },
     "drillFilterOtherVisuals": true,

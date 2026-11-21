@@ -3,9 +3,9 @@
   "name": "runs_table",
   "position": {
     "x": 640,
-    "y": 150,
+    "y": 195,
     "z": 7,
-    "height": 300,
+    "height": 270,
     "width": 620,
     "tabOrder": 7
   },
@@ -27,8 +27,7 @@
                 }
               },
               "queryRef": "public dag_run.run_id",
-              "nativeQueryRef": "run_id",
-              "active": true
+              "nativeQueryRef": "run_id"
             },
             {
               "field": {
@@ -42,8 +41,7 @@
                 }
               },
               "queryRef": "public dag_run.run_type",
-              "nativeQueryRef": "run_type",
-              "active": true
+              "nativeQueryRef": "run_type"
             },
             {
               "field": {
@@ -57,8 +55,7 @@
                 }
               },
               "queryRef": "public dag_run.state",
-              "nativeQueryRef": "state",
-              "active": true
+              "nativeQueryRef": "state"
             },
             {
               "field": {
@@ -72,8 +69,7 @@
                 }
               },
               "queryRef": "public dag_run.start_date",
-              "nativeQueryRef": "start_date",
-              "active": true
+              "nativeQueryRef": "start_date"
             },
             {
               "field": {
@@ -87,8 +83,7 @@
                 }
               },
               "queryRef": "public dag_run.end_date",
-              "nativeQueryRef": "end_date",
-              "active": true
+              "nativeQueryRef": "end_date"
             }
           ]
         }

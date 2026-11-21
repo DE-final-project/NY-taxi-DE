@@ -3,9 +3,9 @@
   "name": "tip_by_hour",
   "position": {
     "x": 640,
-    "y": 200,
+    "y": 210,
     "z": 3,
-    "height": 500,
+    "height": 490,
     "width": 620,
     "tabOrder": 3
   },
@@ -27,8 +27,7 @@
                 }
               },
               "queryRef": "gold fact_trips.pickup_hour",
-              "nativeQueryRef": "pickup_hour",
-              "active": true
+              "nativeQueryRef": "pickup_hour"
             }
           ]
         },

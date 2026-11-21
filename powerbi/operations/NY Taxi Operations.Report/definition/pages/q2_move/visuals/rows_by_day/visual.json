@@ -3,9 +3,9 @@
   "name": "rows_by_day",
   "position": {
     "x": 20,
-    "y": 150,
+    "y": 195,
     "z": 6,
-    "height": 300,
+    "height": 270,
     "width": 600,
     "tabOrder": 6
   },
@@ -27,8 +27,7 @@
                 }
               },
               "queryRef": "gold pipeline_metrics.load_date",
-              "nativeQueryRef": "load_date",
-              "active": true
+              "nativeQueryRef": "load_date"
             }
           ]
         },
@@ -63,9 +62,6 @@
               "nativeQueryRef": "Rows Rejected"
             }
           ]
-        },
-        "Legend": {
-          "projections": []
         }
       }
     },
@@ -78,6 +74,21 @@
               "expr": {
                 "Literal": {
                   "Value": "'Q2: Rows delivered vs rejected per load day'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "objects": {
+      "categoryAxis": [
+        {
+          "properties": {
+            "axisType": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Categorical'"
                 }
               }
             }

@@ -3,9 +3,9 @@
   "name": "attempts_table",
   "position": {
     "x": 20,
-    "y": 470,
+    "y": 480,
     "z": 8,
-    "height": 230,
+    "height": 220,
     "width": 1240,
     "tabOrder": 8
   },
@@ -28,7 +28,7 @@
               },
               "queryRef": "Task Attempts.run_id",
               "nativeQueryRef": "run_id",
-              "active": true
+              "displayName": "Run"
             },
             {
               "field": {
@@ -43,27 +43,7 @@
               },
               "queryRef": "Task Attempts.task_id",
               "nativeQueryRef": "task_id",
-              "active": true
-            },
-            {
-              "field": {
-                "Aggregation": {
-                  "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "Task Attempts"
-                        }
-                      },
-                      "Property": "try_number"
-                    }
-                  },
-                  "Function": 0
-                }
-              },
-              "queryRef": "Sum(Task Attempts.try_number)",
-              "nativeQueryRef": "Sum of try_number",
-              "active": false
+              "displayName": "Task"
             },
             {
               "field": {
@@ -78,7 +58,7 @@
               },
               "queryRef": "Task Attempts.state",
               "nativeQueryRef": "state",
-              "active": true
+              "displayName": "State"
             },
             {
               "field": {
@@ -93,7 +73,27 @@
               },
               "queryRef": "Task Attempts.attempt_kind",
               "nativeQueryRef": "attempt_kind",
-              "active": true
+              "displayName": "Attempt"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Task Attempts"
+                        }
+                      },
+                      "Property": "try_number"
+                    }
+                  },
+                  "Function": 4
+                }
+              },
+              "queryRef": "Max(Task Attempts.try_number)",
+              "nativeQueryRef": "Sum of try_number",
+              "displayName": "Try #"
             },
             {
               "field": {
@@ -113,7 +113,7 @@
               },
               "queryRef": "Sum(Task Attempts.duration_s)",
               "nativeQueryRef": "Sum of duration_s",
-              "active": false
+              "displayName": "Duration (s)"
             }
           ]
         }
