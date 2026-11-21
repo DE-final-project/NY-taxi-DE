@@ -31,7 +31,7 @@ flowchart LR
     AF -.on failure.-> TG[Telegram alert]
 ```
 
-- **Batch:** months `2025-01`, `2025-03` via REST API (pull, paginated).
+- **Batch:** months `2025-01` and `2025-03` … `2025-12` via REST API (pull, paginated); the list comes from `BATCH_MONTHS` in `.env`.
 - **Stream:** month `2025-02` via Kafka (push, micro-batched by the consumer).
 - Lineage of the dbt part: [docs/lineage.png](docs/lineage.png) · ERD: [docs/erd.md](docs/erd.md) · Performance: [docs/performance.md](docs/performance.md)
 
@@ -53,8 +53,41 @@ Airflow runs them as `DockerOperator` tasks.
 | MinIO console (the lake) | http://localhost:9001 |
 | SQL Server (raw / silver / gold) | `localhost,1436` |
 | dbt docs + lineage | `docker compose run --rm dbt dbt docs generate` then `docker compose run --rm -p 8081:8081 dbt dbt docs serve --port 8081 --host 0.0.0.0` |
-| Unit tests | `cd loader-image && pytest -v` (also run by GitHub Actions on every push) |
+| Unit tests (Python) | `cd loader-image && pytest -v` (also run by GitHub Actions on every push) |
+| Unit tests (dbt) | `docker compose run --rm dbt dbt test --select test_type:unit` (`silver_trips` cleaning + batch-wins dedup) |
 | Dashboards | open `powerbi/business/NY Taxi Business.pbip` and `powerbi/operations/NY Taxi Operations.pbip` → Refresh |
+
+## Status
+Latest work on `main` (PR #1 silver layer, PR #2 `omar/work`):
+
+| Area | State |
+|---|---|
+| Sources: batch REST API (Jan, Mar–Dec) + Kafka stream (Feb) | ✅ |
+| Bronze lake (MinIO, Parquet, Hive partitions) → SQL Server `raw` | ✅ file-level incremental load, schema evolution |
+| Silver / Gold with dbt (quarantine, dedup, star schema, `pipeline_metrics`, `dq_reject_summary`) | ✅ |
+| Data quality | ✅ dbt data tests + reconciliation (`raw = silver + quarantine`) + 1 dbt unit test |
+| Orchestration: Airflow `ny_taxi_pipeline` (`@daily`, 2 retries) + Telegram failure alerts | ✅ |
+| Structured JSON logging in all pipeline images (one JSON object per line) | ✅ |
+| CI: GitHub Actions (loader pytest + `dbt parse`) | ✅ |
+| Dashboards: Power BI Business + Operations (`.pbip`) | ✅ |
+| Docs: lineage, ERD, model descriptions, performance measurements | ✅ |
+
+**Known gaps:** the stream is not part of the Airflow DAG (run it with `docker compose run --rm stream-image`);
+the DAG has `catchup=False`, so months are loaded by the ingest step, not by per-month DAG runs; logs are not aggregated
+in a UI; `dbt-project/ny_taxi_silver/` is an earlier standalone dbt project kept from PR #1 — the pipeline,
+Compose and CI use `dbt-image/ny_taxi/`.
+
+## Project layout
+| Path | What |
+|---|---|
+| `batch-api-image/`, `ingest-image/` | REST source and the job that pulls it into the lake |
+| `stream-image/`, `consumer-image/` | Kafka producer (February) and the micro-batch consumer into the lake |
+| `loader-image/` | Lake → SQL Server `raw` (bulk copy, `load_log`, schema evolution) + pytest |
+| `dbt-image/ny_taxi/` | dbt project used by the pipeline: `silver`, `gold`, seeds, tests, unit tests |
+| `airflow/dags/` | `ny_taxi_pipeline` DAG |
+| `powerbi/` | Business and Operations dashboards |
+| `docs/` | Lineage, ERD, performance |
+| `dbt-project/ny_taxi_silver/` | Earlier dbt project (not used by Compose/CI) |
 
 ## Design decisions
 | Layer | Tool | Why | Alternatives considered |
