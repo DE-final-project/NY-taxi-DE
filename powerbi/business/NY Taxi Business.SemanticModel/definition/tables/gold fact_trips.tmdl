@@ -1,0 +1,281 @@
+table 'gold fact_trips'
+	lineageTag: f9ae9bf3-e911-469a-872f-2e7779b56329
+
+	/// Number of clean trips (one row per trip in gold.fact_trips).
+	measure Trips = COUNTROWS('gold fact_trips')
+		formatString: #,##0
+		displayFolder: Key Measures
+		lineageTag: ecca6317-09bd-416b-9dc3-d640a7350791
+
+	/// Total amount charged to riders (fare + surcharges + tips + tolls).
+	measure Revenue = SUM('gold fact_trips'[total_amount])
+		formatString: $#,##0
+		displayFolder: Key Measures
+		lineageTag: f42eb114-0827-4e6d-85ab-227c8da4fb45
+
+	/// Average metered fare per trip.
+	measure 'Avg Fare' = AVERAGE('gold fact_trips'[fare_amount])
+		formatString: $#,##0.00
+		displayFolder: Key Measures
+		lineageTag: 67e749a4-bf22-4c37-bfd4-ba03d01b021d
+
+	/// Average total amount per trip.
+	measure 'Revenue per Trip' = DIVIDE([Revenue], [Trips])
+		formatString: $#,##0.00
+		displayFolder: Key Measures
+		lineageTag: 48f9138e-77a9-40f1-a012-25fe8ca172fa
+
+	/// Average trip distance in miles.
+	measure 'Avg Distance (mi)' = AVERAGE('gold fact_trips'[trip_distance])
+		formatString: #,##0.00
+		displayFolder: Key Measures
+		lineageTag: 0f0f8c96-16e9-4567-b116-953456b07898
+
+	/// Average trip duration in minutes.
+	measure 'Avg Duration (min)' = AVERAGE('gold fact_trips'[trip_duration_min])
+		formatString: #,##0.0
+		displayFolder: Key Measures
+		lineageTag: 53cba1eb-7cb6-4e33-bba5-acf2d431a242
+
+	/// Tips as a share of the fare. Cash tips are not recorded by the meter, so cash trips show ~0%.
+	measure 'Tip %' = DIVIDE(SUM('gold fact_trips'[tip_amount]), SUM('gold fact_trips'[fare_amount]))
+		formatString: 0.0%
+		displayFolder: Key Measures
+		lineageTag: ef9bf9b1-5372-4f6c-9d4f-3ce313f6ff58
+
+	/// Share of trips within the current filter, across payment types.
+	measure 'Trips Share' = DIVIDE([Trips], CALCULATE([Trips], REMOVEFILTERS('gold dim_payment_type')))
+		formatString: 0.0%
+		displayFolder: Key Measures
+		lineageTag: 3cc70100-7055-4230-ac58-e51ed0ed2869
+
+	/// Tip % on credit-card trips only (the only payment type where tips are recorded).
+	measure 'Card Tip %' = ﻿CALCULATE([Tip %], 'gold dim_payment_type'[payment_type] = "Credit card")
+		formatString: 0.0%
+		displayFolder: Key Measures
+		lineageTag: e1b11477-4bb9-4fe5-b727-dcdd56c12740
+
+	column trip_id
+		dataType: string
+		lineageTag: 0edeb342-ac16-4ce1-a147-19efbc852e25
+		summarizeBy: none
+		sourceColumn: trip_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column pickup_date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 40bfa7ab-f199-46a6-bbbf-7603d63e4c2c
+		summarizeBy: sum
+		sourceColumn: pickup_date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column pickup_hour
+		dataType: int64
+		formatString: 0
+		lineageTag: 23067b8b-77d2-4c31-a312-5664ac65cc94
+		summarizeBy: sum
+		sourceColumn: pickup_hour
+
+		annotation SummarizationSetBy = Automatic
+
+	column vendor_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 86f5699d-b20a-481b-82f2-89030f4814c5
+		summarizeBy: none
+		sourceColumn: vendor_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_type_id
+		dataType: int64
+		formatString: 0
+		lineageTag: c4f39e0c-7dfd-476a-8b37-25b4b6242ab5
+		summarizeBy: none
+		sourceColumn: payment_type_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column pickup_location_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 7c7e49bf-6fd3-4f67-abcb-47756512f2a6
+		summarizeBy: sum
+		sourceColumn: pickup_location_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column dropoff_location_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 02e8735b-9e1a-4780-90a9-f1f4e537f333
+		summarizeBy: sum
+		sourceColumn: dropoff_location_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column passenger_count
+		dataType: double
+		lineageTag: f8dd7da0-764a-4455-a18f-07604df26b3c
+		summarizeBy: sum
+		sourceColumn: passenger_count
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column trip_distance
+		dataType: double
+		lineageTag: 11d94211-e56e-4b72-a858-4e11333386e8
+		summarizeBy: sum
+		sourceColumn: trip_distance
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column trip_duration_min
+		dataType: int64
+		formatString: 0
+		lineageTag: a5f463b7-db8f-4fbf-8154-f9fa8e6e42c6
+		summarizeBy: sum
+		sourceColumn: trip_duration_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column fare_amount
+		dataType: double
+		lineageTag: 3b42c524-f3cd-4e77-a172-aad924f38e6f
+		summarizeBy: sum
+		sourceColumn: fare_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column extra
+		dataType: double
+		lineageTag: c5b59fc0-0403-48ae-b916-916679847cb2
+		summarizeBy: sum
+		sourceColumn: extra
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column mta_tax
+		dataType: double
+		lineageTag: 8cc1807f-c7a0-414a-843b-d2ed267740cc
+		summarizeBy: sum
+		sourceColumn: mta_tax
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column tip_amount
+		dataType: double
+		lineageTag: 92f81c7d-8652-47e5-b565-f84c8a823c3c
+		summarizeBy: sum
+		sourceColumn: tip_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column tolls_amount
+		dataType: double
+		lineageTag: 5a131792-21a9-431a-be41-d3ea020c5f93
+		summarizeBy: sum
+		sourceColumn: tolls_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column improvement_surcharge
+		dataType: double
+		lineageTag: d529f8dd-14fd-4fd6-88b9-622c380ddde1
+		summarizeBy: sum
+		sourceColumn: improvement_surcharge
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column congestion_surcharge
+		dataType: double
+		lineageTag: e9444c04-514b-4b02-b471-ef27f8f15f79
+		summarizeBy: sum
+		sourceColumn: congestion_surcharge
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column airport_fee
+		dataType: double
+		lineageTag: abcd4352-f767-49a5-be10-e7cde32b8da6
+		summarizeBy: sum
+		sourceColumn: airport_fee
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column cbd_congestion_fee
+		dataType: double
+		lineageTag: fc6a1ae1-394c-408b-9970-3bede84717b7
+		summarizeBy: sum
+		sourceColumn: cbd_congestion_fee
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_amount
+		dataType: double
+		lineageTag: ca9d373b-781f-4ecd-bf07-02e27e7715a0
+		summarizeBy: sum
+		sourceColumn: total_amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column trip_source
+		dataType: string
+		lineageTag: a38e01c8-c476-4dae-88ff-c1657f0a03ee
+		summarizeBy: none
+		sourceColumn: trip_source
+
+		annotation SummarizationSetBy = Automatic
+
+	column _loaded_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: d3dac959-d222-41c8-899c-f33c2299c5fb
+		summarizeBy: none
+		sourceColumn: _loaded_at
+
+		variation Variation
+			isDefault
+			relationship: 3dd1468c-ffa2-4cdd-8421-b85da2eed387
+			defaultHierarchy: LocalDateTable_2afa2042-0a93-4ad1-bb4b-0c8ea9382992.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'gold fact_trips' = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("localhost,1436", "ny_taxi_dwh"),
+				    gold_fact_trips = Source{[Schema="gold",Item="fact_trips"]}[Data]
+				in
+				    gold_fact_trips
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,35 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Bronze data copied 1:1 from the MinIO lake by the loader service.
+    schema: "{{ env_var('RAW_SCHEMA', 'raw') }}"
+    tables:
+      - name: batch_trips
+        description: Monthly NYC yellow-taxi trips from the batch API (one row per trip, uncleaned).
+        columns:
+          - name: tpep_pickup_datetime
+            tests: [not_null]
+          - name: source_month
+            description: Hive partition of the lake file (YYYY-MM).
+            tests: [not_null]
+          - name: _source_file
+            description: Lake file the row came from (lineage).
+            tests: [not_null]
+
+      - name: stream_trips
+        description: Trips that arrived through Kafka, micro-batched by the consumer.
+        columns:
+          - name: tpep_pickup_datetime
+            tests: [not_null]
+          - name: ingest_date
+            description: Day the consumer wrote the lake file (YYYY-MM-DD).
+            tests: [not_null]
+          - name: _source_file
+            tests: [not_null]
+
+      - name: load_log
+        description: One row per lake file loaded into raw (file-level incremental bookkeeping).
+        columns:
+          - name: file_path
+            tests: [not_null, unique]

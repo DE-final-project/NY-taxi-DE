@@ -1,0 +1,109 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "runs_table",
+  "position": {
+    "x": 640,
+    "y": 195,
+    "z": 7,
+    "height": 270,
+    "width": 620,
+    "tabOrder": 7
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public dag_run"
+                    }
+                  },
+                  "Property": "run_id"
+                }
+              },
+              "queryRef": "public dag_run.run_id",
+              "nativeQueryRef": "run_id"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public dag_run"
+                    }
+                  },
+                  "Property": "run_type"
+                }
+              },
+              "queryRef": "public dag_run.run_type",
+              "nativeQueryRef": "run_type"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public dag_run"
+                    }
+                  },
+                  "Property": "state"
+                }
+              },
+              "queryRef": "public dag_run.state",
+              "nativeQueryRef": "state"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public dag_run"
+                    }
+                  },
+                  "Property": "start_date"
+                }
+              },
+              "queryRef": "public dag_run.start_date",
+              "nativeQueryRef": "start_date"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "public dag_run"
+                    }
+                  },
+                  "Property": "end_date"
+                }
+              },
+              "queryRef": "public dag_run.end_date",
+              "nativeQueryRef": "end_date"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Pipeline runs'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "trips_by_hour",
+  "position": {
+    "x": 20,
+    "y": 285,
+    "z": 1,
+    "height": 415,
+    "width": 1240,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "columnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold fact_trips"
+                    }
+                  },
+                  "Property": "pickup_hour"
+                }
+              },
+              "queryRef": "gold fact_trips.pickup_hour",
+              "nativeQueryRef": "pickup_hour"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold fact_trips"
+                    }
+                  },
+                  "Property": "Trips"
+                }
+              },
+              "queryRef": "gold fact_trips.Trips",
+              "nativeQueryRef": "Trips"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Trips by pickup hour'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

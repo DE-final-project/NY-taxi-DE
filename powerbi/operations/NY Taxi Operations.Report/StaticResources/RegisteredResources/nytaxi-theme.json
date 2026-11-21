@@ -1,0 +1,42 @@
+{
+  "name": "NY Taxi",
+  "dataColors": [
+    "#1F4E79",
+    "#F2A900",
+    "#2E86C1",
+    "#C0392B",
+    "#27AE60",
+    "#8E44AD",
+    "#7F8C8D",
+    "#E67E22"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#252423",
+  "tableAccent": "#1F4E79",
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "transparency": 0
+          }
+        ]
+      }
+    },
+    "textbox": {
+      "*": {
+        "background": [
+          {
+            "show": false
+          }
+        ]
+      }
+    }
+  }
+}

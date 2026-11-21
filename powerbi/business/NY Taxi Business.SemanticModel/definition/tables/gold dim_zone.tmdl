@@ -1,0 +1,47 @@
+table 'gold dim_zone'
+	lineageTag: ee78f8aa-13db-4c6d-8189-f59cd62518b0
+
+	column location_id
+		dataType: int64
+		formatString: 0
+		lineageTag: fc882f63-24cc-480c-a1ff-765f1f53084a
+		summarizeBy: sum
+		sourceColumn: location_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column borough
+		dataType: string
+		lineageTag: ed8ed2b4-7e73-427b-adc0-e504e1c64f29
+		summarizeBy: none
+		sourceColumn: borough
+
+		annotation SummarizationSetBy = Automatic
+
+	column zone_name
+		dataType: string
+		lineageTag: 50aa7cf6-fe3b-4716-96fe-0f3b8712adec
+		summarizeBy: none
+		sourceColumn: zone_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column service_zone
+		dataType: string
+		lineageTag: 5b13b05f-9d53-473a-b5d5-1257adcac5cf
+		summarizeBy: none
+		sourceColumn: service_zone
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'gold dim_zone' = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("localhost,1436", "ny_taxi_dwh"),
+				    gold_dim_zone = Source{[Schema="gold",Item="dim_zone"]}[Data]
+				in
+				    gold_dim_zone
+
+	annotation PBI_ResultType = Table
+

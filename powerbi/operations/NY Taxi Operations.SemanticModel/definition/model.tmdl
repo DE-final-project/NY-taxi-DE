@@ -1,0 +1,52 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["gold pipeline_metrics","gold dq_reject_summary","gold dq_rules","public dag_run","public task_instance","public task_instance_history"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table 'gold pipeline_metrics'
+ref table DateTableTemplate_18c53bb7-66f4-473c-8cf6-6151e0b4f483
+ref table LocalDateTable_16ec29e9-b689-4fd1-8c98-36a9e66781fd
+ref table 'gold dq_reject_summary'
+ref table LocalDateTable_a66b9176-e57b-49cc-8ffb-1e5d4817b2e4
+ref table 'gold dq_rules'
+ref table 'public dag_run'
+ref table LocalDateTable_07fbe3aa-a10e-43ce-a231-93eef34febd7
+ref table LocalDateTable_63d76dcb-66b6-4818-9c3a-fbdde4c0f62a
+ref table LocalDateTable_85a5531c-9b19-4fd9-9a19-7f03adebfaaf
+ref table LocalDateTable_b2538e86-b1a3-4d5e-82db-45d3451c423d
+ref table LocalDateTable_c7d6dfae-288f-4316-8783-d8136c44a664
+ref table LocalDateTable_3f70abc3-1647-4db5-bf6e-c1d2bbbda80d
+ref table LocalDateTable_6f355cde-a744-401e-88dd-a6271f49b105
+ref table LocalDateTable_8114d836-4904-4961-8ea1-31ad2ac28f2a
+ref table LocalDateTable_1e2f5221-ab74-43f3-8b60-492fbed0191c
+ref table LocalDateTable_33a2dd43-559c-4d92-9d55-0f4c899c8727
+ref table LocalDateTable_27a4990a-b77e-44bd-b882-dec5b8407e6a
+ref table 'public task_instance'
+ref table LocalDateTable_75eea2d9-2939-4482-ba08-2ce8c921a432
+ref table LocalDateTable_348a651f-f58e-4878-be06-8c5ac9509503
+ref table LocalDateTable_d152aa33-481b-4728-94c1-65a9b3609066
+ref table LocalDateTable_62f5dd39-c798-47f6-8461-e9e2f919d192
+ref table LocalDateTable_c6f0af04-60b9-4fe6-ab40-c2125b81cf70
+ref table LocalDateTable_2bc7f92c-a213-4ca4-91f9-f0f31e83d648
+ref table LocalDateTable_074e91ea-dfc3-4ed7-911c-4960d79cf932
+ref table 'public task_instance_history'
+ref table LocalDateTable_b9bd0551-a559-40a1-b6db-58400a7033f4
+ref table LocalDateTable_bc65cc0d-548f-447f-8b30-0b7e20d25662
+ref table LocalDateTable_c867c53f-b547-4a1f-973f-49d4d242e361
+ref table LocalDateTable_d74cfc13-3bdd-4d6b-ab43-f0e2221081b5
+ref table LocalDateTable_ad856b9a-b96a-4e36-9bad-d468d8115cfc
+ref table LocalDateTable_8a8ce4ef-d0fc-416c-8ee2-11fe2e773c6e
+ref table 'Task Attempts'
+
+ref cultureInfo en-US
+

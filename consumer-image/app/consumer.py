@@ -1,33 +1,49 @@
-"""Consumes taxi-trip JSON messages from Kafka and bulk-writes micro-batches to Postgres."""
+"""Consumes taxi-trip JSON messages from Kafka and writes micro-batches as Parquet files into the MinIO Bronze bucket."""
 import json
 import logging
 import os
 import signal
 import time
+from datetime import datetime, timezone
 
 import pandas as pd
 from confluent_kafka import Consumer
-from sqlalchemy import create_engine, text
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-)
+
+class JsonFormatter(logging.Formatter):
+    """One JSON object per log line -> easy to filter and aggregate (stage, level, rows, seconds...)."""
+
+    def format(self, record: logging.LogRecord) -> str:
+        entry = {
+            "ts": self.formatTime(record, "%Y-%m-%dT%H:%M:%S"),
+            "level": record.levelname,
+            "stage": record.name,   # the logger name: loader / ingest / batch-api ...
+            "msg": record.getMessage(),
+        }
+        entry.update(getattr(record, "fields", {}))   # numbers passed with extra={"fields": {...}}
+        return json.dumps(entry)
+
+
+handler = logging.StreamHandler()
+handler.setFormatter(JsonFormatter())
+logging.basicConfig(level=logging.INFO, handlers=[handler])
 logger = logging.getLogger("stream-consumer")
+
 
 KAFKA_BOOTSTRAP_SERVERS = os.environ["KAFKA_BOOTSTRAP_SERVERS"]
 KAFKA_TOPIC = os.environ["KAFKA_TOPIC"]
 KAFKA_GROUP_ID = os.environ.get("KAFKA_GROUP_ID", "stream-consumer-group")
-SCHEMA_NAME = os.environ.get("BRONZE_SCHEMA", "bronze")
-TABLE_NAME = os.environ.get("STREAM_TABLE_NAME", "stream_data")
-BATCH_SIZE = int(os.environ.get("CONSUMER_BATCH_SIZE", "500"))
-FLUSH_INTERVAL_SECONDS = float(os.environ.get("CONSUMER_FLUSH_INTERVAL_SECONDS", "5"))
+TABLE_NAME = os.environ.get("STREAM_TABLE_NAME", "stream_trips")
+# Larger micro-batches than a DB insert would need: every flush becomes one Parquet file (avoid small files).
+BATCH_SIZE = int(os.environ.get("CONSUMER_BATCH_SIZE", "20000"))
+FLUSH_INTERVAL_SECONDS = float(os.environ.get("CONSUMER_FLUSH_INTERVAL_SECONDS", "60"))
 
-POSTGRES_HOST = os.environ["POSTGRES_HOST"]
-POSTGRES_PORT = os.environ.get("POSTGRES_PORT", "5432")
-POSTGRES_DB = os.environ["POSTGRES_DB"]
-POSTGRES_USER = os.environ["POSTGRES_USER"]
-POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]
+MINIO_BUCKET = os.environ["MINIO_BUCKET"]
+STORAGE_OPTIONS = {
+    "key": os.environ["MINIO_ROOT_USER"],
+    "secret": os.environ["MINIO_ROOT_PASSWORD"],
+    "client_kwargs": {"endpoint_url": os.environ["MINIO_ENDPOINT"]},
+}
 
 # JSON has no datetime type, so these known taxi columns arrive as strings and need casting.
 DATETIME_COLUMNS = ["tpep_pickup_datetime", "tpep_dropoff_datetime"]
@@ -41,26 +57,27 @@ def _handle_shutdown(signum, frame):
     _running = False
 
 
-def _flush_batch(engine, buffer: list) -> None:
+def _batch_path(partition: int, first_offset: int) -> str:
+    # Named by the batch's first Kafka offset: a redelivered batch (crash before commit) overwrites the same file.
+    ingest_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    return f"s3://{MINIO_BUCKET}/{TABLE_NAME}/ingest_date={ingest_date}/part-p{partition}-o{first_offset:010d}.parquet"
+
+
+def _flush_batch(buffer: list, first: tuple) -> None:
     if not buffer:
         return
     frame = pd.DataFrame(buffer)
     for column in DATETIME_COLUMNS:
         if column in frame.columns:
             frame[column] = pd.to_datetime(frame[column], errors="coerce")
-    frame.to_sql(TABLE_NAME, engine, schema=SCHEMA_NAME, if_exists="append", index=False, method="multi")
-    logger.info("Flushed %d rows to '%s.%s'", len(frame), SCHEMA_NAME, TABLE_NAME)
+    path = _batch_path(*first)
+    frame.to_parquet(path, index=False, storage_options=STORAGE_OPTIONS)
+    logger.info("Flushed %d rows to %s", len(frame), path)
 
 
 def main() -> None:
     signal.signal(signal.SIGTERM, _handle_shutdown)
     signal.signal(signal.SIGINT, _handle_shutdown)
-
-    engine = create_engine(
-        f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
-    )
-    with engine.begin() as conn:
-        conn.execute(text(f"CREATE SCHEMA IF NOT EXISTS {SCHEMA_NAME}"))
 
     consumer = Consumer({
         "bootstrap.servers": KAFKA_BOOTSTRAP_SERVERS,
@@ -71,8 +88,9 @@ def main() -> None:
     consumer.subscribe([KAFKA_TOPIC])
 
     buffer: list = []
-    last_flush = time.monotonic()
-    logger.info("Consuming topic '%s' into table '%s.%s'", KAFKA_TOPIC, SCHEMA_NAME, TABLE_NAME)
+    first = None             # (partition, offset) of the first message in the current batch
+    batch_started = time.monotonic()
+    logger.info("Consuming topic '%s' into s3://%s/%s/", KAFKA_TOPIC, MINIO_BUCKET, TABLE_NAME)
 
     try:
         while _running:
@@ -81,17 +99,19 @@ def main() -> None:
                 if msg.error():
                     logger.warning("Consumer error: %s", msg.error())
                 else:
+                    if not buffer:
+                        first = (msg.partition(), msg.offset())
+                        batch_started = time.monotonic()
                     buffer.append(json.loads(msg.value()))
 
-            elapsed = time.monotonic() - last_flush
+            elapsed = time.monotonic() - batch_started
             if buffer and (len(buffer) >= BATCH_SIZE or elapsed >= FLUSH_INTERVAL_SECONDS):
-                _flush_batch(engine, buffer)
-                consumer.commit(asynchronous=False)
+                _flush_batch(buffer, first)
+                consumer.commit(asynchronous=False)   # commit only AFTER the file is written = at-least-once
                 buffer = []
-                last_flush = time.monotonic()
     finally:
-        _flush_batch(engine, buffer)
         if buffer:
+            _flush_batch(buffer, first)
             consumer.commit(asynchronous=False)
         consumer.close()
         logger.info("Consumer stopped.")

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "revenue_by_borough",
+  "position": {
+    "x": 650,
+    "y": 195,
+    "z": 7,
+    "height": 505,
+    "width": 610,
+    "tabOrder": 7
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dim_zone"
+                    }
+                  },
+                  "Property": "borough"
+                }
+              },
+              "queryRef": "gold dim_zone.borough",
+              "nativeQueryRef": "borough"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold fact_trips"
+                    }
+                  },
+                  "Property": "Revenue"
+                }
+              },
+              "queryRef": "gold fact_trips.Revenue",
+              "nativeQueryRef": "Revenue"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Revenue by pickup borough'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "q3_kpi_3",
+  "position": {
+    "x": 980,
+    "y": 75,
+    "z": 3,
+    "height": 105,
+    "width": 280,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold pipeline_metrics"
+                    }
+                  },
+                  "Property": "Error Rate"
+                }
+              },
+              "queryRef": "gold pipeline_metrics.Error Rate",
+              "nativeQueryRef": "Error Rate"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

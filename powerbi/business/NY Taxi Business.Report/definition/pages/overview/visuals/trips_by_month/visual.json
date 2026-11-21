@@ -1,0 +1,71 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "trips_by_month",
+  "position": {
+    "x": 20,
+    "y": 195,
+    "z": 8,
+    "height": 505,
+    "width": 610,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "columnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dim_date"
+                    }
+                  },
+                  "Property": "Month Label"
+                }
+              },
+              "queryRef": "gold dim_date.Month Label",
+              "nativeQueryRef": "Month Label"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold fact_trips"
+                    }
+                  },
+                  "Property": "Trips"
+                }
+              },
+              "queryRef": "gold fact_trips.Trips",
+              "nativeQueryRef": "Trips"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Trips by month'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

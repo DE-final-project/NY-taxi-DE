@@ -1,0 +1,17 @@
+version: 2
+
+seeds:
+  - name: dim_vendor
+    columns:
+      - name: vendor_id
+        data_tests: [unique, not_null]
+
+  - name: dim_payment_type
+    columns:
+      - name: payment_type_id
+        data_tests: [unique, not_null]
+  - name: dq_rules
+    description: Data-quality rule catalog - why each reject_reason exists and how it is handled.
+    columns:
+      - name: reject_reason
+        data_tests: [unique, not_null]

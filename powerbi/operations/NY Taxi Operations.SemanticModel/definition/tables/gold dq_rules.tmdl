@@ -1,0 +1,54 @@
+table 'gold dq_rules'
+	lineageTag: c753ea1e-1212-4038-86b6-94ebb69e8fae
+
+	column reject_reason
+		dataType: string
+		lineageTag: 785569ba-32d7-4f69-914d-11b35016b8b3
+		summarizeBy: none
+		sourceColumn: reject_reason
+
+		annotation SummarizationSetBy = Automatic
+
+	column rule
+		dataType: string
+		lineageTag: 7c83a07e-ad3e-41a2-9a6d-c9b6e489944b
+		summarizeBy: none
+		sourceColumn: rule
+
+		annotation SummarizationSetBy = Automatic
+
+	column root_cause
+		dataType: string
+		lineageTag: f404c384-d0e3-4cba-8a00-8fbdee465b43
+		summarizeBy: none
+		sourceColumn: root_cause
+
+		annotation SummarizationSetBy = Automatic
+
+	column action
+		dataType: string
+		lineageTag: ac354b79-e4d0-4f3a-bf69-0649247708f4
+		summarizeBy: none
+		sourceColumn: action
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		lineageTag: f2d4c049-e38a-4c2a-bc2c-1751b6994451
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'gold dq_rules' = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("localhost,1436", "ny_taxi_dwh"),
+				    gold_dq_rules = Source{[Schema="gold",Item="dq_rules"]}[Data]
+				in
+				    gold_dq_rules
+
+	annotation PBI_ResultType = Table
+

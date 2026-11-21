@@ -1,0 +1,89 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "reason_by_source",
+  "position": {
+    "x": 460,
+    "y": 195,
+    "z": 5,
+    "height": 270,
+    "width": 800,
+    "tabOrder": 5
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dq_reject_summary"
+                    }
+                  },
+                  "Property": "reject_reason"
+                }
+              },
+              "queryRef": "gold dq_reject_summary.reject_reason",
+              "nativeQueryRef": "reject_reason"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dq_reject_summary"
+                    }
+                  },
+                  "Property": "Quarantined Rows"
+                }
+              },
+              "queryRef": "gold dq_reject_summary.Quarantined Rows",
+              "nativeQueryRef": "Quarantined Rows"
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dq_reject_summary"
+                    }
+                  },
+                  "Property": "source_table"
+                }
+              },
+              "queryRef": "gold dq_reject_summary.source_table",
+              "nativeQueryRef": "source_table"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Rejected rows by reason and source'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

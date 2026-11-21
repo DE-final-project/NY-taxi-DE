@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "q2_kpi_3",
+  "position": {
+    "x": 644,
+    "y": 75,
+    "z": 3,
+    "height": 105,
+    "width": 196,
+    "tabOrder": 3
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold pipeline_metrics"
+                    }
+                  },
+                  "Property": "Delivery Rate"
+                }
+              },
+              "queryRef": "gold pipeline_metrics.Delivery Rate",
+              "nativeQueryRef": "Delivery Rate"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,5 +1,3 @@
-name: ny-taxi-de-main
-
 services:
   postgres:
     image: postgres:16
@@ -11,11 +9,29 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 10
+    networks:
+      - de-final-project-net
+
+  # One-shot: creates the Airflow metadata database in Postgres if it does not exist yet.
+  postgres-init:
+    image: postgres:16
+    container_name: de-final-project-postgres-init
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    entrypoint: >
+      sh -c "psql -h postgres -U ${POSTGRES_USER} -d ${POSTGRES_DB} -tc \"SELECT 1 FROM pg_database WHERE datname = 'airflow'\" | grep -q 1
+      || psql -h postgres -U ${POSTGRES_USER} -d ${POSTGRES_DB} -c 'CREATE DATABASE airflow'"
     networks:
       - de-final-project-net
 
@@ -49,6 +65,7 @@ services:
     build: ./stream-image
     image: de-final-project-stream-image
     container_name: de-final-project-stream
+    scale: 0   # built by `up --build`, but run by Airflow (or `docker compose run`), never on `up`
     restart: "no"
     env_file: .env
     depends_on:
@@ -84,8 +101,113 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
-      postgres:
+      minio-init:
+        condition: service_completed_successfully
+    networks:
+      - de-final-project-net
+  # S3-compatible object storage = our Data Lake (Bronze layer).
+  minio:
+    image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
+    container_name: de-final-project-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+     - de-final-project-net
+
+  # One-shot: creates the Bronze bucket once MinIO is healthy, then exits.
+  minio-init:
+    image: pgsty/minio:RELEASE.2026-08-04T00-00-00Z
+    container_name: de-final-project-minio-init
+    restart: "no"
+    depends_on:
+      minio:
         condition: service_healthy
+    entrypoint: >
+      sh -c "mc alias set local http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}
+      && mc mb --ignore-existing local/${MINIO_BUCKET}"
+    networks:
+      - de-final-project-net
+
+  # Data Warehouse (Silver/Gold). Image build: SQL Server 2022 16.0.4250.1.
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: de-final-project-sqlserver
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      MSSQL_MEMORY_LIMIT_MB: 2048
+    ports:
+      - "1436:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q \"SELECT 1\" -b -o /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    networks:
+      - de-final-project-net
+
+  # One-shot: creates the DWH database if it does not exist yet.
+  sqlserver-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: de-final-project-sqlserver-init
+    restart: "no"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    entrypoint: >
+      /opt/mssql-tools18/bin/sqlcmd -C -S sqlserver -U sa -P "${MSSQL_SA_PASSWORD}" -b
+      -Q "IF DB_ID('${MSSQL_DATABASE}') IS NULL CREATE DATABASE [${MSSQL_DATABASE}]"
+    networks:
+      - de-final-project-net
+
+  # One-shot: incrementally copies new Bronze Parquet files from MinIO into SQL Server raw tables.
+  loader:
+    build: ./loader-image
+    image: de-final-project-loader-image
+    container_name: de-final-project-loader
+    scale: 0   # built by `up --build`, but run by Airflow (or `docker compose run`), never on `up`
+    restart: "no"
+    env_file: .env
+    depends_on:
+      minio-init:
+        condition: service_completed_successfully
+      sqlserver-init:
+        condition: service_completed_successfully
+    networks:
+      - de-final-project-net
+
+  # One-shot: dbt transformations raw -> silver -> gold inside SQL Server.
+  # Usage: docker compose run --rm dbt dbt build
+  dbt:
+    build: ./dbt-image
+    image: de-final-project-dbt-image
+    container_name: de-final-project-dbt
+    scale: 0   # built by `up --build`, but run by Airflow (or `docker compose run`), never on `up`
+    restart: "no"
+    env_file: .env
+    volumes:
+      - ./dbt-image/ny_taxi:/usr/app
+    depends_on:
+      sqlserver-init:
+        condition: service_completed_successfully
     networks:
       - de-final-project-net
 
@@ -93,37 +215,59 @@ services:
     build: ./ingest-image
     image: de-final-project-ingest-image
     container_name: de-final-project-ingest
+    scale: 0   # built by `up --build`, but run by Airflow (or `docker compose run`), never on `up`
     restart: "no"
     env_file: .env
     depends_on:
-      postgres:
-        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
       batch-api:
         condition: service_healthy
     networks:
       - de-final-project-net
-
-  dbt:
-    build: ./dbt-image
-    image: de-final-project-dbt
-    container_name: ny-taxi-dbt
-    working_dir: /usr/app
-    volumes:
-      - ./dbt-project/ny_taxi_silver:/usr/app
-    env_file:
-      - .env
+  # Orchestrator: runs the pipeline (ingest -> load -> dbt) as Docker containers via the DAG in airflow/dags.
+  # Dev only: `standalone` runs api-server + scheduler + dag-processor in one container, UI without login.
+  airflow:
+    image: apache/airflow:3.3.2-python3.12
+    container_name: de-final-project-airflow
+    restart: unless-stopped
+    command: standalone
+    env_file: .env
     environment:
-      DBT_PROFILES_DIR: /usr/app
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_ALL_ADMINS: "true"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "false"   # new DAGs start active -> no manual unpause
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8080:8080"
     depends_on:
-      postgres:
+      postgres-init:
+        condition: service_completed_successfully
+      minio-init:
+        condition: service_completed_successfully
+      sqlserver-init:
+        condition: service_completed_successfully
+      batch-api:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/api/v2/monitor/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
     networks:
-      - de-final-project-net    
-
+      - de-final-project-net
 networks:
   de-final-project-net:
+    name: de-final-project-net
     driver: bridge
 
 volumes:
   pg_data:
   batch_cache:
+  minio_data:
+  mssql_data:

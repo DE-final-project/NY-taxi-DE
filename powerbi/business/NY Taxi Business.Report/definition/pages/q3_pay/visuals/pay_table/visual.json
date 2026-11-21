@@ -1,0 +1,109 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "pay_table",
+  "position": {
+    "x": 20,
+    "y": 390,
+    "z": 4,
+    "height": 310,
+    "width": 600,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold dim_payment_type"
+                    }
+                  },
+                  "Property": "payment_type"
+                }
+              },
+              "queryRef": "gold dim_payment_type.payment_type",
+              "nativeQueryRef": "payment_type"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold fact_trips"
+                    }
+                  },
+                  "Property": "Trips"
+                }
+              },
+              "queryRef": "gold fact_trips.Trips",
+              "nativeQueryRef": "Trips"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold fact_trips"
+                    }
+                  },
+                  "Property": "Trips Share"
+                }
+              },
+              "queryRef": "gold fact_trips.Trips Share",
+              "nativeQueryRef": "Trips Share"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold fact_trips"
+                    }
+                  },
+                  "Property": "Revenue per Trip"
+                }
+              },
+              "queryRef": "gold fact_trips.Revenue per Trip",
+              "nativeQueryRef": "Revenue per Trip"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "gold fact_trips"
+                    }
+                  },
+                  "Property": "Tip %"
+                }
+              },
+              "queryRef": "gold fact_trips.Tip %",
+              "nativeQueryRef": "Tip %"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Payment type detail (cash tips are not recorded)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

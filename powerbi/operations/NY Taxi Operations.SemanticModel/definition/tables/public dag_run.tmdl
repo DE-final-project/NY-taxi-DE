@@ -1,0 +1,348 @@
+table 'public dag_run'
+	lineageTag: dd9c070c-b2a9-4c48-b5e0-7ac32e9dd9db
+
+	/// Pipeline runs (DAG runs) in Airflow.
+	measure Runs = COUNTROWS('public dag_run')
+		formatString: #,##0
+		displayFolder: Q1 Runs
+		lineageTag: 1702b51d-e879-4f20-9de3-86b5b23f0ed6
+
+	/// Runs that finished with state success.
+	measure 'Successful Runs' = CALCULATE([Runs], 'public dag_run'[state] = "success")
+		formatString: #,##0
+		displayFolder: Q1 Runs
+		lineageTag: 76233f7f-eeb8-4b39-87e9-0b8c19b9ac40
+
+	/// Runs that finished with state failed (a task failed after all retries).
+	measure 'Failed Runs' = CALCULATE([Runs], 'public dag_run'[state] = "failed")
+		formatString: #,##0
+		displayFolder: Q1 Runs
+		lineageTag: 5c2686ec-c50e-493b-af81-97b7ae3f6f3c
+
+	/// Successful runs / all runs.
+	measure 'Run Success Rate' = DIVIDE([Successful Runs], [Runs])
+		formatString: 0.0%
+		displayFolder: Q1 Runs
+		lineageTag: 85ff9b10-0c10-4785-9572-c8d1a66293c7
+
+	/// Average wall-clock time of finished runs, in minutes.
+	measure 'Avg Run Duration (min)' = AVERAGEX(FILTER('public dag_run', NOT ISBLANK('public dag_run'[end_date])), DATEDIFF('public dag_run'[start_date], 'public dag_run'[end_date], SECOND)) / 60
+		formatString: #,##0.0
+		displayFolder: Q1 Runs
+		lineageTag: d477e097-3db0-474b-ab34-8b56036d21d6
+
+	column id
+		dataType: int64
+		formatString: 0
+		lineageTag: c0a2623c-af6e-427d-afdd-b7bbf7e700d8
+		summarizeBy: sum
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column dag_id
+		dataType: string
+		lineageTag: 24609a08-8d50-4f58-a149-7b866047fbd5
+		summarizeBy: none
+		sourceColumn: dag_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column queued_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 121e17fd-7fe4-4631-a984-4d50d63b76ef
+		summarizeBy: none
+		sourceColumn: queued_at
+
+		variation Variation
+			isDefault
+			relationship: d34a7e6f-09c9-462f-b593-2ec5a2e49c2f
+			defaultHierarchy: LocalDateTable_07fbe3aa-a10e-43ce-a231-93eef34febd7.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column logical_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: b563cb1b-44b3-411c-b7ad-625b3cbcb92c
+		summarizeBy: none
+		sourceColumn: logical_date
+
+		variation Variation
+			isDefault
+			relationship: 19e4ab8a-477b-46ae-ac0b-195d89a8200f
+			defaultHierarchy: LocalDateTable_63d76dcb-66b6-4818-9c3a-fbdde4c0f62a.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column start_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: e32c9c7e-d882-4cfd-a12a-13767c2c4e69
+		summarizeBy: none
+		sourceColumn: start_date
+
+		variation Variation
+			isDefault
+			relationship: a8facade-820a-4479-9330-b6cf5a3cfc15
+			defaultHierarchy: LocalDateTable_85a5531c-9b19-4fd9-9a19-7f03adebfaaf.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column end_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 43585ed0-f2a5-480e-93b2-8278093e6fe3
+		summarizeBy: none
+		sourceColumn: end_date
+
+		variation Variation
+			isDefault
+			relationship: 6b218990-8b2d-4e87-bcd6-8a6c76333e8e
+			defaultHierarchy: LocalDateTable_b2538e86-b1a3-4d5e-82db-45d3451c423d.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column state
+		dataType: string
+		lineageTag: c7e3e40c-7a67-4bf5-9056-a0bcb8e8b790
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+	column run_id
+		dataType: string
+		lineageTag: 05fd5bbd-dba6-4775-8040-02c3c697c17d
+		summarizeBy: none
+		sourceColumn: run_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column creating_job_id
+		dataType: int64
+		formatString: 0
+		lineageTag: d52d4ded-f29a-40ba-8167-9acccab3cf3b
+		summarizeBy: sum
+		sourceColumn: creating_job_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column run_type
+		dataType: string
+		lineageTag: fe4179b0-1ae7-4229-9360-16603e764ca1
+		summarizeBy: none
+		sourceColumn: run_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column triggered_by
+		dataType: string
+		lineageTag: d9c980ac-ed29-4020-ba64-5bb563ed059b
+		summarizeBy: none
+		sourceColumn: triggered_by
+
+		annotation SummarizationSetBy = Automatic
+
+	column triggering_user_name
+		dataType: string
+		lineageTag: 611f06da-7683-4247-942d-8453944dbf3b
+		summarizeBy: none
+		sourceColumn: triggering_user_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column conf
+		dataType: string
+		lineageTag: b65052d5-18ff-475a-ac93-79ee71e8966f
+		summarizeBy: none
+		sourceColumn: conf
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_interval_start
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: d6383e99-5c25-4827-81a5-69b4d95c04d9
+		summarizeBy: none
+		sourceColumn: data_interval_start
+
+		variation Variation
+			isDefault
+			relationship: 763db7fb-1bf3-4857-9e02-7800dc3e37c2
+			defaultHierarchy: LocalDateTable_c7d6dfae-288f-4316-8783-d8136c44a664.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_interval_end
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 25edbb22-763d-4db5-8f5d-12815ff18739
+		summarizeBy: none
+		sourceColumn: data_interval_end
+
+		variation Variation
+			isDefault
+			relationship: 373d3f30-0491-4d95-81fc-51a88eaf904f
+			defaultHierarchy: LocalDateTable_3f70abc3-1647-4db5-bf6e-c1d2bbbda80d.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column run_after
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: a46b7920-fa48-4a85-b276-5f025eaefca0
+		summarizeBy: none
+		sourceColumn: run_after
+
+		variation Variation
+			isDefault
+			relationship: f1162c5d-9f1e-4892-94f5-85d2e1d6de71
+			defaultHierarchy: LocalDateTable_6f355cde-a744-401e-88dd-a6271f49b105.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column last_scheduling_decision
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 2f7fa42e-44be-4b66-adda-2f1fa6b1c064
+		summarizeBy: none
+		sourceColumn: last_scheduling_decision
+
+		variation Variation
+			isDefault
+			relationship: d361772d-7309-4c84-800e-33c7a45cc786
+			defaultHierarchy: LocalDateTable_8114d836-4904-4961-8ea1-31ad2ac28f2a.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column log_template_id
+		dataType: int64
+		formatString: 0
+		lineageTag: a6cd07cd-86eb-496b-aa0b-bb2c73984ae3
+		summarizeBy: sum
+		sourceColumn: log_template_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column created_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: e13a6de4-abc9-4c04-abac-86a59522b689
+		summarizeBy: none
+		sourceColumn: created_at
+
+		variation Variation
+			isDefault
+			relationship: 252e2884-d5c1-47a0-948a-85335efbc1f2
+			defaultHierarchy: LocalDateTable_1e2f5221-ab74-43f3-8b60-492fbed0191c.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column updated_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: e6c227de-09e2-47dd-933f-89c31fb2c680
+		summarizeBy: none
+		sourceColumn: updated_at
+
+		variation Variation
+			isDefault
+			relationship: e895f69c-a7f4-447e-8b79-1e1a139da3da
+			defaultHierarchy: LocalDateTable_33a2dd43-559c-4d92-9d55-0f4c899c8727.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column clear_number
+		dataType: int64
+		formatString: 0
+		lineageTag: b67a6218-aa1e-483d-b692-8e8d64ffab91
+		summarizeBy: sum
+		sourceColumn: clear_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column backfill_id
+		dataType: int64
+		formatString: 0
+		lineageTag: f5557b9f-e5ad-4fe1-b986-90ff983dcac4
+		summarizeBy: sum
+		sourceColumn: backfill_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column bundle_version
+		dataType: string
+		lineageTag: bdbf0ce9-a472-4add-9c71-7b11cf81b2e3
+		summarizeBy: none
+		sourceColumn: bundle_version
+
+		annotation SummarizationSetBy = Automatic
+
+	column scheduled_by_job_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 4a582894-b40c-4f91-b534-102c49cafeed
+		summarizeBy: sum
+		sourceColumn: scheduled_by_job_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column context_carrier
+		dataType: string
+		lineageTag: 52e9c08e-7c00-4afa-9150-4caa0c2b0353
+		summarizeBy: none
+		sourceColumn: context_carrier
+
+		annotation SummarizationSetBy = Automatic
+
+	column span_status
+		dataType: string
+		lineageTag: 18b5e8e4-d0d0-4000-94fc-3671e7429164
+		summarizeBy: none
+		sourceColumn: span_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column created_dag_version_id
+		dataType: string
+		lineageTag: bcd01406-1ab5-42c7-9abd-4f7b824fd748
+		summarizeBy: none
+		sourceColumn: created_dag_version_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column partition_key
+		dataType: string
+		lineageTag: 06813718-fa8b-45e3-9570-b55ac38e67db
+		summarizeBy: none
+		sourceColumn: partition_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column partition_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f13bcd52-dd9f-43d5-8a81-6f8392e78487
+		summarizeBy: none
+		sourceColumn: partition_date
+
+		variation Variation
+			isDefault
+			relationship: be09f697-343b-4e77-ad10-c77fefe1fa86
+			defaultHierarchy: LocalDateTable_27a4990a-b77e-44bd-b882-dec5b8407e6a.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'public dag_run' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5432", "airflow"),
+				    public_dag_run = Source{[Schema="public",Item="dag_run"]}[Data]
+				in
+				    public_dag_run
+
+	annotation PBI_ResultType = Table
+

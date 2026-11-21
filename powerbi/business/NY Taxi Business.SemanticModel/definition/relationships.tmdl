@@ -1,0 +1,31 @@
+relationship 3dd1468c-ffa2-4cdd-8421-b85da2eed387
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'gold fact_trips'._loaded_at
+	toColumn: LocalDateTable_2afa2042-0a93-4ad1-bb4b-0c8ea9382992.Date
+
+relationship f0dee1b4-ac9e-476d-bd35-f43c8778b4b8
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'gold dim_date'.full_date
+	toColumn: LocalDateTable_3590bb7d-806e-4c0c-83e0-0d3e9b7fc77d.Date
+
+relationship AutoDetected_f519a510-73c0-4855-a1c0-5293b06a45e1
+	fromColumn: 'gold fact_trips'.vendor_id
+	toColumn: 'gold dim_vendor'.vendor_id
+
+relationship AutoDetected_02ada967-8142-4202-a9b1-7d1ee7b26e30
+	fromColumn: 'gold fact_trips'.payment_type_id
+	toColumn: 'gold dim_payment_type'.payment_type_id
+
+relationship fact_pickup_date
+	fromColumn: 'gold fact_trips'.pickup_date_key
+	toColumn: 'gold dim_date'.date_key
+
+relationship fact_pickup_zone
+	fromColumn: 'gold fact_trips'.pickup_location_id
+	toColumn: 'gold dim_zone'.location_id
+
+relationship fact_dropoff_zone
+	isActive: false
+	fromColumn: 'gold fact_trips'.dropoff_location_id
+	toColumn: 'gold dim_zone'.location_id
+

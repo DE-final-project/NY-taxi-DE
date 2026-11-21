@@ -1,0 +1,112 @@
+table 'gold dim_date'
+	lineageTag: 9a5572be-8fda-46cc-9dcd-a1940899d554
+	dataCategory: Time
+
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: a402f2d5-351e-4603-9edc-6fc6ac4afa25
+		summarizeBy: sum
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column full_date
+		dataType: dateTime
+		isKey
+		formatString: Long Date
+		lineageTag: 416adcd7-a642-4f37-92ea-e6d89b76816c
+		summarizeBy: none
+		sourceColumn: full_date
+
+		variation Variation
+			isDefault
+			relationship: f0dee1b4-ac9e-476d-bd35-f43c8778b4b8
+			defaultHierarchy: LocalDateTable_3590bb7d-806e-4c0c-83e0-0d3e9b7fc77d.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: aa4c2274-42b1-4086-87c0-d277ec50295d
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: a2620d78-528f-4f82-9215-e0e848d0614b
+		summarizeBy: sum
+		sourceColumn: quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: int64
+		formatString: 0
+		lineageTag: 851460f6-e124-4c5f-aa5e-9bec45f6f3f8
+		summarizeBy: sum
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_name
+		dataType: string
+		lineageTag: 56892942-0afe-4fb8-af7d-4cc11789ed80
+		summarizeBy: none
+		sourceColumn: month_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_of_month
+		dataType: int64
+		formatString: 0
+		lineageTag: c523ce52-351b-48e0-8908-596f39d25118
+		summarizeBy: sum
+		sourceColumn: day_of_month
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_name
+		dataType: string
+		lineageTag: 9575ae64-92b1-4995-994a-873c787e0655
+		summarizeBy: none
+		sourceColumn: day_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_weekend
+		dataType: int64
+		formatString: 0
+		lineageTag: 67f82d19-4be4-4a84-b541-60747b68e11f
+		summarizeBy: sum
+		sourceColumn: is_weekend
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Sortable weekday label: 1 Mon ... 7 Sun.
+	column Weekday = FORMAT(WEEKDAY('gold dim_date'[full_date], 2), "0") & " " & LEFT('gold dim_date'[day_name], 3)
+		dataType: string
+		lineageTag: 93be4be5-181c-4b54-91a9-b6ba029a85ac
+
+	/// Sortable month label: 01 Jan ... 12 Dec.
+	column 'Month Label' = FORMAT('gold dim_date'[month], "00") & " " & LEFT('gold dim_date'[month_name], 3)
+		dataType: string
+		lineageTag: 9247eb69-5350-4189-bb6a-2dc805ad22ab
+
+	partition 'gold dim_date' = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("localhost,1436", "ny_taxi_dwh"),
+				    gold_dim_date = Source{[Schema="gold",Item="dim_date"]}[Data]
+				in
+				    gold_dim_date
+
+	annotation PBI_ResultType = Table
+

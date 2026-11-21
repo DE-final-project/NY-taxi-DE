@@ -1,0 +1,2 @@
+dbt-sqlserver==1.12.2
+pyodbc==5.5.0

@@ -1,0 +1,146 @@
+relationship f27ae5e0-610b-475b-8fa6-a9660296dc7f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'gold pipeline_metrics'.load_date
+	toColumn: LocalDateTable_16ec29e9-b689-4fd1-8c98-36a9e66781fd.Date
+
+relationship 10cdacf8-49af-4672-943d-f615c0283432
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'gold dq_reject_summary'.load_date
+	toColumn: LocalDateTable_a66b9176-e57b-49cc-8ffb-1e5d4817b2e4.Date
+
+relationship AutoDetected_608843ca-5506-43e5-a057-146e8c8cc730
+	fromColumn: 'gold dq_reject_summary'.reject_reason
+	toColumn: 'gold dq_rules'.reject_reason
+
+relationship d34a7e6f-09c9-462f-b593-2ec5a2e49c2f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public dag_run'.queued_at
+	toColumn: LocalDateTable_07fbe3aa-a10e-43ce-a231-93eef34febd7.Date
+
+relationship 19e4ab8a-477b-46ae-ac0b-195d89a8200f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public dag_run'.logical_date
+	toColumn: LocalDateTable_63d76dcb-66b6-4818-9c3a-fbdde4c0f62a.Date
+
+relationship a8facade-820a-4479-9330-b6cf5a3cfc15
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public dag_run'.start_date
+	toColumn: LocalDateTable_85a5531c-9b19-4fd9-9a19-7f03adebfaaf.Date
+
+relationship 6b218990-8b2d-4e87-bcd6-8a6c76333e8e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public dag_run'.end_date
+	toColumn: LocalDateTable_b2538e86-b1a3-4d5e-82db-45d3451c423d.Date
+
+relationship 763db7fb-1bf3-4857-9e02-7800dc3e37c2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public dag_run'.data_interval_start
+	toColumn: LocalDateTable_c7d6dfae-288f-4316-8783-d8136c44a664.Date
+
+relationship 373d3f30-0491-4d95-81fc-51a88eaf904f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public dag_run'.data_interval_end
+	toColumn: LocalDateTable_3f70abc3-1647-4db5-bf6e-c1d2bbbda80d.Date
+
+relationship f1162c5d-9f1e-4892-94f5-85d2e1d6de71
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public dag_run'.run_after
+	toColumn: LocalDateTable_6f355cde-a744-401e-88dd-a6271f49b105.Date
+
+relationship d361772d-7309-4c84-800e-33c7a45cc786
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public dag_run'.last_scheduling_decision
+	toColumn: LocalDateTable_8114d836-4904-4961-8ea1-31ad2ac28f2a.Date
+
+relationship 252e2884-d5c1-47a0-948a-85335efbc1f2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public dag_run'.created_at
+	toColumn: LocalDateTable_1e2f5221-ab74-43f3-8b60-492fbed0191c.Date
+
+relationship e895f69c-a7f4-447e-8b79-1e1a139da3da
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public dag_run'.updated_at
+	toColumn: LocalDateTable_33a2dd43-559c-4d92-9d55-0f4c899c8727.Date
+
+relationship be09f697-343b-4e77-ad10-c77fefe1fa86
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public dag_run'.partition_date
+	toColumn: LocalDateTable_27a4990a-b77e-44bd-b882-dec5b8407e6a.Date
+
+relationship 25de25dc-4d33-40a5-a944-117f587ec2b2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public task_instance'.start_date
+	toColumn: LocalDateTable_75eea2d9-2939-4482-ba08-2ce8c921a432.Date
+
+relationship cacb00b8-905d-4e72-bd67-dc799d0e75cd
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public task_instance'.end_date
+	toColumn: LocalDateTable_348a651f-f58e-4878-be06-8c5ac9509503.Date
+
+relationship 43e5f049-6802-4157-9223-0adc0fdb4563
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public task_instance'.queued_dttm
+	toColumn: LocalDateTable_d152aa33-481b-4728-94c1-65a9b3609066.Date
+
+relationship fa960621-6bc3-4209-b99e-feba8826425d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public task_instance'.scheduled_dttm
+	toColumn: LocalDateTable_62f5dd39-c798-47f6-8461-e9e2f919d192.Date
+
+relationship d5bc9e50-4490-453e-ba6f-7203caf44417
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public task_instance'.last_heartbeat_at
+	toColumn: LocalDateTable_c6f0af04-60b9-4fe6-ab40-c2125b81cf70.Date
+
+relationship d45af8ca-c036-4e61-8fcc-59cd196132fc
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public task_instance'.updated_at
+	toColumn: LocalDateTable_2bc7f92c-a213-4ca4-91f9-f0f31e83d648.Date
+
+relationship 07d19de3-6796-43e8-a15a-d550dd67864a
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public task_instance'.trigger_timeout
+	toColumn: LocalDateTable_074e91ea-dfc3-4ed7-911c-4960d79cf932.Date
+
+relationship 6be6f8fa-5146-4afe-8395-f51a7d1524a3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public task_instance_history'.start_date
+	toColumn: LocalDateTable_b9bd0551-a559-40a1-b6db-58400a7033f4.Date
+
+relationship 3c24d75f-f63e-40e9-a726-c6bea6e55148
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public task_instance_history'.end_date
+	toColumn: LocalDateTable_bc65cc0d-548f-447f-8b30-0b7e20d25662.Date
+
+relationship b3615448-016f-4c11-8dbc-dc5553146a6f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public task_instance_history'.queued_dttm
+	toColumn: LocalDateTable_c867c53f-b547-4a1f-973f-49d4d242e361.Date
+
+relationship ae870a07-dba8-4193-ab97-1acd87fbe5f6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public task_instance_history'.scheduled_dttm
+	toColumn: LocalDateTable_d74cfc13-3bdd-4d6b-ab43-f0e2221081b5.Date
+
+relationship ae65b1fc-2cfe-4272-bf97-54f8c5191a95
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public task_instance_history'.updated_at
+	toColumn: LocalDateTable_ad856b9a-b96a-4e36-9bad-d468d8115cfc.Date
+
+relationship 927933d7-9769-4893-8c6d-2389de1f67fb
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public task_instance_history'.trigger_timeout
+	toColumn: LocalDateTable_8a8ce4ef-d0fc-416c-8ee2-11fe2e773c6e.Date
+
+relationship AutoDetected_2038dc66-d862-47ff-90b8-1b1041a9ecc8
+	fromColumn: 'public task_instance'.run_id
+	toColumn: 'public dag_run'.run_id
+
+relationship AutoDetected_7e14954f-4c9a-4c5b-836b-b861bd8c3ee2
+	fromColumn: 'public task_instance_history'.run_id
+	toColumn: 'public dag_run'.run_id
+
+relationship attempts_run
+	fromColumn: 'Task Attempts'.run_id
+	toColumn: 'public dag_run'.run_id
+

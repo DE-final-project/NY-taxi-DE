@@ -2,4 +2,12 @@
 __pycache__/
 *.pyc
 .venv/
+
+# Power BI: binaries, local cache and per-user settings (the .pbip project files ARE tracked)
+*.pbix
+powerbi/_pbix_backup/
+**/.pbi/
+.pytest_cache/
+
+# local logs (from main)
 logs/
