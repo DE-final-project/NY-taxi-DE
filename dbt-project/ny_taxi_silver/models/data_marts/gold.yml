@@ -1,0 +1,133 @@
+version: 2
+
+models:
+  - name: dim_vendor
+    description: >
+      Vendor dimension containing distinct taxi technology providers.
+      Uses a surrogate key to identify each vendor in the analytical model.
+
+    columns:
+      - name: vendor_key
+        description: Surrogate primary key identifying a vendor.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: vendor_id
+        description: Original taxi technology provider identifier.
+        data_tests:
+          - not_null
+          - unique
+
+  - name: dim_payment_type
+    description: >
+      Payment type dimension containing distinct payment methods
+      used in taxi trips. Provides a descriptive reference for
+      payment types in the fact table.
+
+    columns:
+      - name: payment_type_key
+        description: Surrogate primary key identifying a payment type.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: payment_type
+        description: Original payment type identifier.
+        data_tests:
+          - not_null
+          - unique
+
+  - name: dim_location
+    description: >
+      Location dimension containing distinct TLC Taxi Zone identifiers.
+      Used to identify both pickup and dropoff locations.
+
+    columns:
+      - name: location_key
+        description: Surrogate primary key identifying a taxi location.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: location_id
+        description: Original TLC Taxi Zone identifier.
+        data_tests:
+          - not_null
+          - unique
+
+  - name: dim_date
+    description: >
+      Date dimension containing unique calendar dates.
+      Supports date-based analysis of taxi pickup and dropoff activity.
+
+    columns:
+      - name: date_key
+        description: Surrogate primary key identifying a calendar date.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: full_date
+        description: Actual calendar date represented by the date key.
+        data_tests:
+          - not_null
+          - unique
+
+  - name: fact_trip
+    description: >
+      Central fact table containing validated NYC Yellow Taxi trip records.
+      Connects each trip to vendor, payment type, pickup location,
+      dropoff location, pickup date, and dropoff date dimensions.
+      Supports analytical queries and reporting.
+
+    columns:
+      - name: vendor_key
+        description: Foreign key referencing the vendor dimension.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_vendor')
+                field: vendor_key
+
+      - name: payment_type_key
+        description: Foreign key referencing the payment type dimension.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_payment_type')
+                field: payment_type_key
+
+      - name: pickup_location_key
+        description: Foreign key referencing the pickup location in the location dimension.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_location')
+                field: location_key
+
+      - name: dropoff_location_key
+        description: Foreign key referencing the dropoff location in the location dimension.
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_location')
+                field: location_key
+
+      - name: pickup_date_key
+        description: Foreign key referencing the pickup date in the date dimension.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+
+      - name: dropoff_date_key
+        description: Foreign key referencing the dropoff date in the date dimension.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key

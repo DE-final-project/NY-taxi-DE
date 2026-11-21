@@ -8,3 +8,6 @@ __pycache__/
 powerbi/_pbix_backup/
 **/.pbi/
 .pytest_cache/
+
+# local logs (from main)
+logs/

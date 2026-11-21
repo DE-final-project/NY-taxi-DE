@@ -1,0 +1,18 @@
+
+
+---------- dbt dbug -----------------------
+docker compose run --rm dbt debug    
+
+
+----------- dbt build -------------------------
+docker compose run --rm dbt build
+
+
+----------- generate data lineage , catalog and docs ------------
+docker compose run --rm dbt docs generate
+
+
+----------- show catalog , docs and data lineage  -----------
+docker compose run --rm -p 8080:8080 dbt docs serve --host 0.0.0.0 --port 8080  
+
+then open in browser : http://localhost:8080
